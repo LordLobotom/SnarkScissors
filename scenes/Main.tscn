@@ -1,9 +1,14 @@
-[gd_scene format=3 uid="uid://0pjlx3p031ye"]
+[gd_scene load_steps=2 format=3 uid="uid://0pjlx3p031ye"]
 
-[node name="Main" type="Node2D"]
+[ext_resource type="Script" uid="uid://c0fo2f5bgwwxq" path="res://scripts/Main.gd" id="1_elqb8"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_elqb8")
 
 [node name="GameUI" type="Control" parent="."]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -30,6 +35,7 @@ offset_left = 36.0
 offset_top = 310.0
 offset_right = 156.0
 offset_bottom = 341.0
+toggle_mode = true
 text = "Scissors"
 
 [node name="btnPaper" type="Button" parent="GameUI/panPlayer1"]
@@ -37,6 +43,7 @@ offset_left = 184.0
 offset_top = 312.0
 offset_right = 310.0
 offset_bottom = 343.0
+toggle_mode = true
 text = "Paper"
 
 [node name="btnRock" type="Button" parent="GameUI/panPlayer1"]
@@ -44,6 +51,7 @@ offset_left = 344.0
 offset_top = 315.0
 offset_right = 467.0
 offset_bottom = 346.0
+toggle_mode = true
 text = "Rock"
 
 [node name="btnScore" type="Label" parent="GameUI/panPlayer1"]
@@ -71,6 +79,7 @@ offset_left = 193.0
 offset_top = 316.0
 offset_right = 322.0
 offset_bottom = 347.0
+toggle_mode = true
 text = "Paper"
 
 [node name="btnScissors" type="Button" parent="GameUI/panPlayer2"]
@@ -78,6 +87,7 @@ offset_left = 48.0
 offset_top = 315.0
 offset_right = 175.0
 offset_bottom = 348.0
+toggle_mode = true
 text = "Scissors"
 
 [node name="btnRock" type="Button" parent="GameUI/panPlayer2"]
@@ -85,6 +95,7 @@ offset_left = 339.0
 offset_top = 316.0
 offset_right = 472.0
 offset_bottom = 347.0
+toggle_mode = true
 text = "Rock"
 
 [node name="btnScore" type="Label" parent="GameUI/panPlayer2"]
@@ -109,7 +120,7 @@ offset_right = 139.0
 offset_bottom = 35.0
 text = "CountDown"
 
-[node name="lblResul" type="Label" parent="GameUI/panCenter"]
+[node name="lblResult" type="Label" parent="GameUI/panCenter"]
 layout_mode = 0
 offset_left = 69.0
 offset_top = 15.0
@@ -118,6 +129,7 @@ offset_bottom = 38.0
 text = "Result"
 
 [node name="lblVS" type="Label" parent="GameUI/panCenter"]
+visible = false
 layout_mode = 0
 offset_left = 70.0
 offset_top = 16.0
