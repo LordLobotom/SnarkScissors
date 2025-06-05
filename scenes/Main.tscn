@@ -142,3 +142,16 @@ offset_top = 16.0
 offset_right = 110.0
 offset_bottom = 39.0
 text = "VS"
+
+[node name="panControl" type="Panel" parent="GameUI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="btnStart" type="Button" parent="GameUI/panControl"]
+layout_mode = 0
+offset_left = 484.0
+offset_top = 284.0
+offset_right = 770.0
+offset_bottom = 378.0
+text = "Start"
