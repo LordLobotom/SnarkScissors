@@ -39,6 +39,7 @@ toggle_mode = true
 text = "Scissors"
 
 [node name="btnPaper" type="Button" parent="GameUI/panPlayer1"]
+layout_mode = 0
 offset_left = 184.0
 offset_top = 312.0
 offset_right = 310.0
@@ -47,6 +48,7 @@ toggle_mode = true
 text = "Paper"
 
 [node name="btnRock" type="Button" parent="GameUI/panPlayer1"]
+layout_mode = 0
 offset_left = 344.0
 offset_top = 315.0
 offset_right = 467.0
@@ -55,6 +57,7 @@ toggle_mode = true
 text = "Rock"
 
 [node name="btnScore" type="Label" parent="GameUI/panPlayer1"]
+layout_mode = 0
 offset_left = 128.0
 offset_top = 375.0
 offset_right = 358.0
@@ -75,6 +78,7 @@ offset_bottom = 23.0
 text = "Player 2"
 
 [node name="btnPaper" type="Button" parent="GameUI/panPlayer2"]
+layout_mode = 0
 offset_left = 193.0
 offset_top = 316.0
 offset_right = 322.0
@@ -83,6 +87,7 @@ toggle_mode = true
 text = "Paper"
 
 [node name="btnScissors" type="Button" parent="GameUI/panPlayer2"]
+layout_mode = 0
 offset_left = 48.0
 offset_top = 315.0
 offset_right = 175.0
@@ -91,6 +96,7 @@ toggle_mode = true
 text = "Scissors"
 
 [node name="btnRock" type="Button" parent="GameUI/panPlayer2"]
+layout_mode = 0
 offset_left = 339.0
 offset_top = 316.0
 offset_right = 472.0
