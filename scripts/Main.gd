@@ -1,7 +1,7 @@
 extends Control
 
 const COUNTDOWN_TIME := 10.0
-const RESULT_DISPLAY_TIME := 2.0
+const RESULT_DISPLAY_TIME := 3.0
 const FIGHT_BEGIN_TIME := 2.0
 
 var countdown_timer := COUNTDOWN_TIME
@@ -12,8 +12,7 @@ var phase_timer := 0.0
 
 func _ready():
 	connect_buttons()
-	initialize_score_display()
-	start_fight_begin()
+	initialize_ui()
 
 func _process(delta):
 	if fight_begin_active:
@@ -31,20 +30,36 @@ func _process(delta):
 		phase_timer -= delta
 		if phase_timer <= 0:
 			result_display_active = false
-			reset_ui()
-			start_fight_begin()
+			check_round_status()
 
 func connect_buttons():
+	# Připojíme tlačítka pro výběr
 	$GameUI/panPlayer1/btnRock.connect("pressed", func(): set_choice(1, GameManager.Choice.ROCK))
 	$GameUI/panPlayer1/btnPaper.connect("pressed", func(): set_choice(1, GameManager.Choice.PAPER))
 	$GameUI/panPlayer1/btnScissors.connect("pressed", func(): set_choice(1, GameManager.Choice.SCISSORS))
 	$GameUI/panPlayer2/btnRock.connect("pressed", func(): set_choice(2, GameManager.Choice.ROCK))
 	$GameUI/panPlayer2/btnPaper.connect("pressed", func(): set_choice(2, GameManager.Choice.PAPER))
 	$GameUI/panPlayer2/btnScissors.connect("pressed", func(): set_choice(2, GameManager.Choice.SCISSORS))
+	
+	# Připojíme tlačítko Start
+	$GameUI/panControl/btnStart.connect("pressed", start_new_round)
 
-func initialize_score_display():
-	$GameUI/panPlayer1/btnScore.text = "Score: %d" % GameManager.player1_score
-	$GameUI/panPlayer2/btnScore.text = "Score: %d" % GameManager.player2_score
+func initialize_ui():
+	update_score_display()
+	show_start_screen()
+
+func show_start_screen():
+	$GameUI/panCenter/lblResult.text = "Připraveni na nové kolo?"
+	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panControl/btnStart.visible = true
+	set_buttons_disabled(true)
+	unselect_buttons($GameUI/panPlayer1)
+	unselect_buttons($GameUI/panPlayer2)
+
+func start_new_round():
+	GameManager.start_new_round()
+	$GameUI/panControl/btnStart.visible = false
+	start_fight_begin()
 
 func start_fight_begin():
 	fight_begin_active = true
@@ -57,7 +72,7 @@ func start_fight_begin():
 
 func set_choice(player: int, choice):
 	# Povolujeme výběr pouze během aktivního odpočtu
-	if not countdown_active:
+	if not countdown_active or GameManager.current_game_state != GameManager.GameState.ROUND_IN_PROGRESS:
 		return
 		
 	if player == 1 and GameManager.player1_choice == null:
@@ -98,17 +113,26 @@ func update_countdown_label():
 
 func evaluate_game():
 	var winner = GameManager.evaluate_round()
+	var result_text = ""
 	
-	# Zobrazíme výsledek
+	# Aktualizujeme počet výher v kole
 	match winner:
 		0:
-			$GameUI/panCenter/lblResult.text = "Remíza!"
+			result_text = "Remíza!"
 		1:
-			$GameUI/panCenter/lblResult.text = "Vyhrál hráč 1!"
+			GameManager.player1_round_wins += 1
+			result_text = "Vyhrál hráč 1!"
 		2:
-			$GameUI/panCenter/lblResult.text = "Vyhrál hráč 2!"
+			GameManager.player2_round_wins += 1
+			result_text = "Vyhrál hráč 2!"
 	
-	# Aktualizujeme skóre
+	# Přidáme informaci o skóre v kole
+	result_text += "\nSkóre kola: %d - %d" % [GameManager.player1_round_wins, GameManager.player2_round_wins]
+	
+	# Zobrazíme výsledek
+	$GameUI/panCenter/lblResult.text = result_text
+	
+	# Aktualizujeme celkové skóre
 	update_score_display()
 	
 	# Schováme odpočet
@@ -121,19 +145,27 @@ func evaluate_game():
 	start_result_display()
 
 func handle_timeout():
+	var result_text = ""
+	
 	# Vyhodnotíme situaci při timeoutu
 	if GameManager.player1_choice == null and GameManager.player2_choice == null:
-		$GameUI/panCenter/lblResult.text = "Nikdo nevybral – kolo zrušeno."
+		result_text = "Nikdo nevybral – kolo zrušeno."
 	elif GameManager.player1_choice == null:
-		GameManager.player2_score += 1
-		$GameUI/panCenter/lblResult.text = "Hráč 1 nestihl – vyhrál hráč 2!"
+		GameManager.player2_round_wins += 1
+		result_text = "Hráč 1 nestihl – vyhrál hráč 2!"
 	elif GameManager.player2_choice == null:
-		GameManager.player1_score += 1
-		$GameUI/panCenter/lblResult.text = "Hráč 2 nestihl – vyhrál hráč 1!"
+		GameManager.player1_round_wins += 1
+		result_text = "Hráč 2 nestihl – vyhrál hráč 1!"
 	else:
 		# Oba stihli vybrat, ale čas vypršel
 		evaluate_game()
 		return
+	
+	# Přidáme informaci o skóre v kole
+	result_text += "\nSkóre kola: %d - %d" % [GameManager.player1_round_wins, GameManager.player2_round_wins]
+	
+	# Zobrazíme výsledek
+	$GameUI/panCenter/lblResult.text = result_text
 	
 	# Aktualizujeme skóre
 	update_score_display()
@@ -157,6 +189,28 @@ func start_result_display():
 	
 	# Zablokujeme tlačítka během zobrazení výsledku
 	set_buttons_disabled(true)
+
+func check_round_status():
+	var round_winner = GameManager.check_round_winner()
+	
+	if round_winner > 0:
+		# Někdo vyhrál celé kolo
+		var winner_text = ""
+		if round_winner == 1:
+			winner_text = "🎉 HRÁČ 1 VYHRÁL KOLO! 🎉"
+		else:
+			winner_text = "🎉 HRÁČ 2 VYHRÁL KOLO! 🎉"
+		
+		$GameUI/panCenter/lblResult.text = winner_text
+		GameManager.finish_round()
+		
+		# Po chvíli zobrazíme tlačítko pro nové kolo
+		await get_tree().create_timer(2.0).timeout
+		show_start_screen()
+	else:
+		# Kolo pokračuje, resetujeme UI a začínáme další hru
+		reset_ui()
+		start_fight_begin()
 
 func reset_ui():
 	$GameUI/panCenter/lblResult.text = ""
