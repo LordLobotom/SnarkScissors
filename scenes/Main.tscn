@@ -17,10 +17,10 @@ grow_vertical = 2
 
 [node name="panPlayer1" type="Panel" parent="GameUI"]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 61.0
-offset_right = 534.0
-offset_bottom = 563.0
+offset_left = 237.0
+offset_top = 83.0
+offset_right = 625.0
+offset_bottom = 536.0
 
 [node name="lblPlayerName" type="Label" parent="GameUI/panPlayer1"]
 layout_mode = 0
@@ -29,46 +29,26 @@ offset_right = 73.0
 offset_bottom = 23.0
 text = "Player 1"
 
-[node name="btnScissors" type="Button" parent="GameUI/panPlayer1"]
+[node name="lblChoice" type="Label" parent="GameUI/panPlayer1"]
 layout_mode = 0
-offset_left = 36.0
-offset_top = 310.0
-offset_right = 156.0
-offset_bottom = 341.0
-toggle_mode = true
-text = "Scissors"
-
-[node name="btnPaper" type="Button" parent="GameUI/panPlayer1"]
-layout_mode = 0
-offset_left = 184.0
-offset_top = 312.0
-offset_right = 310.0
-offset_bottom = 343.0
-toggle_mode = true
-text = "Paper"
-
-[node name="btnRock" type="Button" parent="GameUI/panPlayer1"]
-layout_mode = 0
-offset_left = 344.0
-offset_top = 315.0
-offset_right = 467.0
-offset_bottom = 346.0
-toggle_mode = true
-text = "Rock"
+offset_left = 11.0
+offset_top = 50.0
+offset_right = 120.0
+offset_bottom = 80.0
 
 [node name="btnScore" type="Label" parent="GameUI/panPlayer1"]
 layout_mode = 0
-offset_left = 128.0
-offset_top = 375.0
-offset_right = 358.0
-offset_bottom = 440.0
+offset_left = 86.0
+offset_top = 371.0
+offset_right = 316.0
+offset_bottom = 436.0
 
 [node name="panPlayer2" type="Panel" parent="GameUI"]
 layout_mode = 0
-offset_left = 734.0
-offset_top = 65.0
-offset_right = 1240.0
-offset_bottom = 568.0
+offset_left = 759.0
+offset_top = 80.0
+offset_right = 1153.0
+offset_bottom = 536.0
 
 [node name="lblPlayerName" type="Label" parent="GameUI/panPlayer2"]
 layout_mode = 0
@@ -77,81 +57,104 @@ offset_right = 74.0
 offset_bottom = 23.0
 text = "Player 2"
 
-[node name="btnPaper" type="Button" parent="GameUI/panPlayer2"]
+[node name="lblChoice" type="Label" parent="GameUI/panPlayer2"]
 layout_mode = 0
-offset_left = 193.0
-offset_top = 316.0
-offset_right = 322.0
-offset_bottom = 347.0
-toggle_mode = true
-text = "Paper"
-
-[node name="btnScissors" type="Button" parent="GameUI/panPlayer2"]
-layout_mode = 0
-offset_left = 48.0
-offset_top = 315.0
-offset_right = 175.0
-offset_bottom = 348.0
-toggle_mode = true
-text = "Scissors"
-
-[node name="btnRock" type="Button" parent="GameUI/panPlayer2"]
-layout_mode = 0
-offset_left = 339.0
-offset_top = 316.0
-offset_right = 472.0
-offset_bottom = 347.0
-toggle_mode = true
-text = "Rock"
+offset_left = 12.0
+offset_top = 50.0
+offset_right = 120.0
+offset_bottom = 80.0
 
 [node name="btnScore" type="Label" parent="GameUI/panPlayer2"]
 layout_mode = 0
-offset_left = 148.0
+offset_left = 100.0
 offset_top = 378.0
-offset_right = 382.0
+offset_right = 334.0
 offset_bottom = 439.0
-
-[node name="panCenter" type="Panel" parent="GameUI"]
-layout_mode = 0
-offset_left = 544.0
-offset_top = 138.0
-offset_right = 726.0
-offset_bottom = 189.0
-
-[node name="lblCountDown" type="Label" parent="GameUI/panCenter"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 12.0
-offset_right = 139.0
-offset_bottom = 35.0
-text = "CountDown"
-
-[node name="lblResult" type="Label" parent="GameUI/panCenter"]
-layout_mode = 0
-offset_left = 69.0
-offset_top = 15.0
-offset_right = 118.0
-offset_bottom = 38.0
-text = "Result"
-
-[node name="lblVS" type="Label" parent="GameUI/panCenter"]
-visible = false
-layout_mode = 0
-offset_left = 70.0
-offset_top = 16.0
-offset_right = 110.0
-offset_bottom = 39.0
-text = "VS"
 
 [node name="panControl" type="Panel" parent="GameUI"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 190.0
+offset_top = 574.0
+offset_right = 1231.0
+offset_bottom = 702.0
+
+[node name="btnRock" type="Button" parent="GameUI/panControl"]
+layout_mode = 0
+offset_left = 779.0
+offset_top = 46.0
+offset_right = 902.0
+offset_bottom = 77.0
+toggle_mode = true
+text = "Rock"
+
+[node name="btnPaper" type="Button" parent="GameUI/panControl"]
+layout_mode = 0
+offset_left = 621.0
+offset_top = 49.0
+offset_right = 747.0
+offset_bottom = 80.0
+toggle_mode = true
+text = "Paper"
+
+[node name="btnScissors" type="Button" parent="GameUI/panControl"]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 48.0
+offset_right = 596.0
+offset_bottom = 79.0
+toggle_mode = true
+text = "Scissors"
 
 [node name="btnStart" type="Button" parent="GameUI/panControl"]
 layout_mode = 0
-offset_left = 484.0
-offset_top = 284.0
-offset_right = 770.0
-offset_bottom = 378.0
+offset_left = 160.0
+offset_top = 13.0
+offset_right = 446.0
+offset_bottom = 107.0
 text = "Start"
+
+[node name="panMessage" type="Panel" parent="GameUI"]
+layout_mode = 0
+offset_left = 528.0
+offset_top = 258.0
+offset_right = 863.0
+offset_bottom = 371.0
+
+[node name="lblResult" type="Label" parent="GameUI/panMessage"]
+layout_mode = 0
+offset_left = 129.0
+offset_top = 44.0
+offset_right = 178.0
+offset_bottom = 67.0
+text = "Result"
+
+[node name="lblCountDown" type="Label" parent="GameUI/panMessage"]
+layout_mode = 0
+offset_left = 104.0
+offset_top = 44.0
+offset_right = 196.0
+offset_bottom = 67.0
+text = "CountDown"
+
+[node name="panMenu" type="Panel" parent="GameUI"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 11.0
+offset_right = 183.0
+offset_bottom = 702.0
+
+[node name="btnJoinGame" type="Button" parent="GameUI/panMenu"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 143.0
+offset_right = 148.0
+offset_bottom = 174.0
+text = "Join game"
+
+[node name="btnHostGame" type="Button" parent="GameUI/panMenu"]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 186.0
+offset_right = 150.0
+offset_bottom = 217.0
+text = "Host game"

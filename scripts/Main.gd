@@ -4,11 +4,20 @@ const COUNTDOWN_TIME := 10.0
 const RESULT_DISPLAY_TIME := 3.0
 const FIGHT_BEGIN_TIME := 2.0
 
+# Player 2 key mapping
+const PLAYER2_KEYS = {
+	'j': GameManager.Choice.ROCK,
+	'k': GameManager.Choice.PAPER,
+	'l': GameManager.Choice.SCISSORS
+}
+
 var countdown_timer := COUNTDOWN_TIME
 var countdown_active := false
 var result_display_active := false
 var fight_begin_active := false
 var phase_timer := 0.0
+# Track if player 2 has chosen
+var player2_has_chosen := false
 
 func _ready():
 	connect_buttons()
@@ -33,30 +42,39 @@ func _process(delta):
 			check_round_status()
 
 func connect_buttons():
-	# Připojíme tlačítka pro výběr
-	$GameUI/panPlayer1/btnRock.connect("pressed", func(): set_choice(1, GameManager.Choice.ROCK))
-	$GameUI/panPlayer1/btnPaper.connect("pressed", func(): set_choice(1, GameManager.Choice.PAPER))
-	$GameUI/panPlayer1/btnScissors.connect("pressed", func(): set_choice(1, GameManager.Choice.SCISSORS))
-	$GameUI/panPlayer2/btnRock.connect("pressed", func(): set_choice(2, GameManager.Choice.ROCK))
-	$GameUI/panPlayer2/btnPaper.connect("pressed", func(): set_choice(2, GameManager.Choice.PAPER))
-	$GameUI/panPlayer2/btnScissors.connect("pressed", func(): set_choice(2, GameManager.Choice.SCISSORS))
+	# Připojíme tlačítka pro výběr (Player 1)
+	$GameUI/panControl/btnRock.connect("pressed", func(): set_choice(1, GameManager.Choice.ROCK))
+	$GameUI/panControl/btnPaper.connect("pressed", func(): set_choice(1, GameManager.Choice.PAPER))
+	$GameUI/panControl/btnScissors.connect("pressed", func(): set_choice(1, GameManager.Choice.SCISSORS))
 	
 	# Připojíme tlačítko Start
 	$GameUI/panControl/btnStart.connect("pressed", start_new_round)
+	
+	# Show hint for Player 2 controls
+	$GameUI/panPlayer2/lblPlayerName.text = "Player 2 (J/K/L)"
 
 func initialize_ui():
 	update_score_display()
 	show_start_screen()
 
 func show_start_screen():
-	$GameUI/panCenter/lblResult.text = "Připraveni na nové kolo?"
-	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panMessage/lblResult.text = "Připraveni na nové kolo?"
+	$GameUI/panMessage/lblCountDown.text = ""
 	$GameUI/panControl/btnStart.visible = true
 	set_buttons_disabled(true)
 	unselect_buttons($GameUI/panPlayer1)
 	unselect_buttons($GameUI/panPlayer2)
+	# Reset choice displays
+	$GameUI/panPlayer1/lblPlayerName.text = "Player 1"
+	$GameUI/panPlayer2/lblPlayerName.text = "Player 2 (J/K/L)"
 
 func start_new_round():
+	player2_has_chosen = false
+	GameManager.reset_choices()
+	show_start_screen()
+	fight_begin_active = true
+	phase_timer = FIGHT_BEGIN_TIME
+
 	GameManager.start_new_round()
 	$GameUI/panControl/btnStart.visible = false
 	start_fight_begin()
@@ -64,52 +82,54 @@ func start_new_round():
 func start_fight_begin():
 	fight_begin_active = true
 	phase_timer = FIGHT_BEGIN_TIME
-	$GameUI/panCenter/lblResult.text = "Fight begin!"
-	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panMessage/lblResult.text = "Fight begin!"
+	$GameUI/panMessage/lblCountDown.text = ""
 	
 	# Zablokujeme tlačítka během "Fight begin"
 	set_buttons_disabled(true)
 
 func set_choice(player: int, choice):
 	# Povolujeme výběr pouze během aktivního odpočtu
-	if not countdown_active or GameManager.current_game_state != GameManager.GameState.ROUND_IN_PROGRESS:
+	if GameManager.current_game_state != GameManager.GameState.ROUND_IN_PROGRESS:
 		return
-		
 	if player == 1 and GameManager.player1_choice == null:
 		GameManager.player1_choice = choice
-		highlight_selected_button(1, choice)
+		update_choice_display(1, choice)
+		set_buttons_disabled(true)
 	elif player == 2 and GameManager.player2_choice == null:
 		GameManager.player2_choice = choice
-		highlight_selected_button(2, choice)
-	
-	# Pokud oba hráči vybrali, okamžitě vyhodnotíme
+		update_choice_display(2, choice)
+		player2_has_chosen = true
+	# Check if both players have chosen
 	if GameManager.player1_choice != null and GameManager.player2_choice != null:
-		countdown_active = false
-		evaluate_game()
+		GameManager.process_choices()
 
-func highlight_selected_button(player: int, choice):
+# Handle Player 2 keyboard input
+func _input(event):
+	if GameManager.current_game_state != GameManager.GameState.ROUND_IN_PROGRESS:
+		return
+	if GameManager.player2_choice == null and event is InputEventKey and event.pressed and not event.echo:
+		var key = OS.get_keycode_string(event.keycode).to_lower()
+		if key in PLAYER2_KEYS:
+			set_choice(2, PLAYER2_KEYS[key])
+
+func update_choice_display(player: int, choice):
+	# Show the player's choice in the lblChoice label in their panel
 	var panel_path = "GameUI/panPlayer" + str(player)
 	var panel = get_node(panel_path)
-	
-	# Resetujeme všechna tlačítka v panelu
-	unselect_buttons(panel)
-	
-	# Zvýrazníme vybrané tlačítko
-	var button_name = ""
+	var label = panel.get_node("lblChoice")
 	match choice:
 		GameManager.Choice.ROCK:
-			button_name = "btnRock"
+			label.text = "Rock"
 		GameManager.Choice.PAPER:
-			button_name = "btnPaper"
+			label.text = "Paper"
 		GameManager.Choice.SCISSORS:
-			button_name = "btnScissors"
-	
-	if button_name != "":
-		var button = panel.get_node(button_name)
-		button.button_pressed = true
+			label.text = "Scissors"
+		_:
+			label.text = ""
 
 func update_countdown_label():
-	$GameUI/panCenter/lblCountDown.text = "Čas: %.1f" % max(0, countdown_timer)
+	$GameUI/panMessage/lblCountDown.text = "Čas: %.1f" % max(0, countdown_timer)
 
 func evaluate_game():
 	var winner = GameManager.evaluate_round()
@@ -130,13 +150,13 @@ func evaluate_game():
 	result_text += "\nSkóre kola: %d - %d" % [GameManager.player1_round_wins, GameManager.player2_round_wins]
 	
 	# Zobrazíme výsledek
-	$GameUI/panCenter/lblResult.text = result_text
+	$GameUI/panMessage/lblResult.text = result_text
 	
 	# Aktualizujeme celkové skóre
 	update_score_display()
 	
 	# Schováme odpočet
-	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panMessage/lblCountDown.text = ""
 	
 	# Resetujeme choices v GameManageru
 	GameManager.reset_choices()
@@ -165,13 +185,13 @@ func handle_timeout():
 	result_text += "\nSkóre kola: %d - %d" % [GameManager.player1_round_wins, GameManager.player2_round_wins]
 	
 	# Zobrazíme výsledek
-	$GameUI/panCenter/lblResult.text = result_text
+	$GameUI/panMessage/lblResult.text = result_text
 	
 	# Aktualizujeme skóre
 	update_score_display()
 	
 	# Schováme odpočet
-	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panMessage/lblCountDown.text = ""
 	
 	# Resetujeme choices
 	GameManager.reset_choices()
@@ -201,7 +221,7 @@ func check_round_status():
 		else:
 			winner_text = "🎉 HRÁČ 2 VYHRÁL KOLO! 🎉"
 		
-		$GameUI/panCenter/lblResult.text = winner_text
+		$GameUI/panMessage/lblResult.text = winner_text
 		GameManager.finish_round()
 		
 		# Po chvíli zobrazíme tlačítko pro nové kolo
@@ -213,8 +233,8 @@ func check_round_status():
 		start_fight_begin()
 
 func reset_ui():
-	$GameUI/panCenter/lblResult.text = ""
-	$GameUI/panCenter/lblCountDown.text = ""
+	$GameUI/panMessage/lblResult.text = ""
+	$GameUI/panMessage/lblCountDown.text = ""
 	
 	# Resetujeme všechna tlačítka
 	unselect_buttons($GameUI/panPlayer1)
@@ -227,7 +247,7 @@ func start_countdown():
 	fight_begin_active = false
 	
 	# Vymažeme "Fight begin" text
-	$GameUI/panCenter/lblResult.text = ""
+	$GameUI/panMessage/lblResult.text = ""
 	
 	# Povolíme tlačítka pro výběr
 	set_buttons_disabled(false)
