@@ -1,0 +1,181 @@
+[gd_scene load_steps=2 format=3 uid="uid://crfya0eumism"]
+
+[ext_resource type="Script" uid="uid://bp4avtkbk8lkb" path="res://scripts/MainMenu.gd" id="1_yqorp"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 237.0
+grow_vertical = 2
+script = ExtResource("1_yqorp")
+
+[node name="MultiplayerButton" type="Button" parent="LeftMenu"]
+layout_mode = 2
+text = "Multiplayer"
+
+[node name="SettingsButton" type="Button" parent="LeftMenu"]
+layout_mode = 2
+text = "Nastavení"
+
+[node name="QuitButton" type="Button" parent="LeftMenu"]
+layout_mode = 2
+text = "Ukončit"
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -135.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BackButton" type="Button" parent="BottomBar"]
+layout_mode = 2
+text = "Zpět"
+
+[node name="NextButton" type="Button" parent="BottomBar"]
+layout_mode = 2
+text = "Další
+"
+
+[node name="MainWindow" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.594
+anchor_top = 0.376
+anchor_right = 0.594
+anchor_bottom = 0.376
+offset_left = -514.32
+offset_top = -272.72
+offset_right = 514.68
+offset_bottom = 304.28
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConnectionPanel" type="Panel" parent="MainWindow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainWindow/ConnectionPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -99.5
+offset_top = -11.5
+offset_right = 99.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="MainWindow/ConnectionPanel/VBox"]
+layout_mode = 2
+text = "SnarkScissors Multiplayer"
+horizontal_alignment = 1
+
+[node name="HostButton" type="Button" parent="MainWindow/ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Hostovat hru"
+
+[node name="JoinButton" type="Button" parent="MainWindow/ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Připojit se"
+
+[node name="IPContainer" type="HBoxContainer" parent="MainWindow/ConnectionPanel/VBox"]
+layout_mode = 2
+
+[node name="IPLabel" type="Label" parent="MainWindow/ConnectionPanel/VBox/IPContainer"]
+layout_mode = 2
+text = "IP Adresa:"
+
+[node name="IPInput" type="LineEdit" parent="MainWindow/ConnectionPanel/VBox/IPContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "127.0.0.1"
+max_length = 1
+
+[node name="PortContainer" type="HBoxContainer" parent="MainWindow/ConnectionPanel/VBox"]
+layout_mode = 2
+
+[node name="PortLabel" type="Label" parent="MainWindow/ConnectionPanel/VBox/PortContainer"]
+layout_mode = 2
+text = "Port:"
+
+[node name="PortInput" type="SpinBox" parent="MainWindow/ConnectionPanel/VBox/PortContainer"]
+layout_mode = 2
+min_value = 1024.0
+max_value = 65535.0
+value = 7777.0
+
+[node name="LobbyPanel" type="Panel" parent="MainWindow"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainWindow/LobbyPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LobbyTitleLabel" type="Label" parent="MainWindow/LobbyPanel/VBox"]
+layout_mode = 2
+text = "Lobby"
+
+[node name="LobbyStatusLabel" type="Label" parent="MainWindow/LobbyPanel/VBox"]
+layout_mode = 2
+text = "Status"
+
+[node name="PlayersContainer" type="HBoxContainer" parent="MainWindow/LobbyPanel/VBox"]
+layout_mode = 2
+
+[node name="PlayersLabel" type="Label" parent="MainWindow/LobbyPanel/VBox/PlayersContainer"]
+layout_mode = 2
+text = "Hráči:"
+
+[node name="PlayersList" type="VBoxContainer" parent="MainWindow/LobbyPanel/VBox/PlayersContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="MainWindow/LobbyPanel/VBox"]
+layout_mode = 2
+
+[node name="ReadyButton" type="Button" parent="MainWindow/LobbyPanel/VBox/ButtonsContainer"]
+layout_mode = 2
+text = "Připraven"
+
+[node name="StartButton" type="Button" parent="MainWindow/LobbyPanel/VBox/ButtonsContainer"]
+layout_mode = 2
+text = "Spustit hru"
+
+[node name="DisconnectButton" type="Button" parent="MainWindow/LobbyPanel/VBox/ButtonsContainer"]
+layout_mode = 2
+text = "Odpojit"
