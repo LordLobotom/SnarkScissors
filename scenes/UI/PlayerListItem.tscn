@@ -6,17 +6,15 @@
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 140.0
+offset_left = 495.0
+offset_bottom = 73.0
 grow_horizontal = 2
 script = ExtResource("1_kyv0l")
 
 [node name="HBox" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 23.0
 
 [node name="NameLabel" type="Label" parent="HBox"]
 layout_mode = 2

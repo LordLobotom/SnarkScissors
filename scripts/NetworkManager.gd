@@ -1,5 +1,3 @@
-
-# ===== OPRAVENÝ NetworkManager.gd =====
 # NetworkManager.gd
 # Singleton pro správu multiplayer připojení a synchronizaci
 extends Node
@@ -32,7 +30,6 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
-	# Debug výpisy pro testování
 	print("NetworkManager ready - Local Player ID: ", local_player_id)
 
 # ========================================
@@ -87,7 +84,6 @@ func disconnect_from_server():
 	is_connected = false
 	connected_peers.clear()
 	
-	# Vrátit se do hlavního menu
 	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
 
 # ========================================
@@ -128,12 +124,12 @@ func _on_server_disconnected():
 	disconnect_from_server()
 
 # ========================================
-# GAME STATE SYNCHRONIZACE
+# GAME STATE SYNCHRONIZACE - OPRAVENO
 # ========================================
 
 @rpc("any_peer", "call_remote", "reliable")
 func sync_player_choice(player_id: int, choice: String):
-	"""Synchronizuje volbu hráče (kámen/papír/nůžky)"""
+	"""Synchronizuje volbu hráče"""
 	print("Přijata volba od hráče ", player_id, ": ", choice)
 	if game_scene_ref:
 		game_scene_ref.receive_player_choice(player_id, choice)
@@ -154,19 +150,34 @@ func start_game():
 	print("Spouštím hru pro všechny hráče!")
 	get_tree().change_scene_to_file("res://scenes/GameScene.tscn")
 
+# NOVÉ RPC FUNKCE PRO SYNCHRONIZACI KOLA
 @rpc("authority", "call_local", "reliable")
-func start_round():
-	"""Host spustí nové kolo"""
-	print("Spouštím nové kolo")
+func sync_round_start(round_number: int):
+	"""Synchronizuje začátek kola"""
+	print("Synchronizuji začátek kola: ", round_number)
 	if game_scene_ref:
-		game_scene_ref.start_new_round()
+		game_scene_ref.sync_start_new_round(round_number)
+
+@rpc("authority", "call_local", "reliable")
+func sync_countdown_phase(countdown_time: float):
+	"""Synchronizuje countdown fázi"""
+	print("Synchronizuji countdown: ", countdown_time)
+	if game_scene_ref:
+		game_scene_ref.sync_countdown_phase(countdown_time)
+
+@rpc("authority", "call_local", "reliable")
+func sync_choice_phase(choice_time: float):
+	"""Synchronizuje fázi výběru"""
+	print("Synchronizuji fázi výběru: ", choice_time)
+	if game_scene_ref:
+		game_scene_ref.sync_choice_phase(choice_time)
 
 @rpc("authority", "call_local", "reliable") 
-func end_round(winner_id: int, results: Dictionary):
-	"""Host ukončí kolo s výsledky"""
-	print("Ukončuji kolo, výherce: ", winner_id)
+func sync_round_end(winner_id: int, results: Dictionary):
+	"""Synchronizuje konec kola"""
+	print("Synchronizuji konec kola, výherce: ", winner_id)
 	if game_scene_ref:
-		game_scene_ref.end_round(winner_id, results)
+		game_scene_ref.sync_round_end(winner_id, results)
 
 # ========================================
 # UTILITY FUNKCE
@@ -181,7 +192,7 @@ func get_connected_players() -> Array:
 
 func get_player_count() -> int:
 	"""Vrátí počet připojených hráčů"""
-	return connected_peers.size() + 1  # +1 pro hosta
+	return connected_peers.size() + 1
 
 func is_all_players_ready() -> bool:
 	"""Zkontroluje jestli jsou všichni hráči připraveni"""
@@ -200,20 +211,38 @@ func set_player_ready(ready: bool):
 	print("Nastavuji ready stav: ", ready)
 	sync_player_ready.rpc(local_player_id, ready)
 
+# NOVÉ FUNKCE PRO SYNCHRONIZACI
+func start_round_for_all():
+	"""Host spustí kolo pro všechny hráče"""
+	if is_host and game_scene_ref:
+		var round_num = game_scene_ref.current_round
+		sync_round_start.rpc(round_num)
+
+func start_countdown_for_all(time: float):
+	"""Host spustí countdown pro všechny"""
+	if is_host:
+		sync_countdown_phase.rpc(time)
+
+func start_choice_phase_for_all(time: float):
+	"""Host spustí fázi výběru pro všechny"""
+	if is_host:
+		sync_choice_phase.rpc(time)
+
+func end_round_for_all(winner_id: int, results: Dictionary):
+	"""Host ukončí kolo pro všechny"""
+	if is_host:
+		sync_round_end.rpc(winner_id, results)
+
 func get_local_player_id() -> int:
-	"""Vrátí ID lokálního hráče"""
 	return local_player_id
 
 func get_is_host() -> bool:
-	"""Vrátí true pokud je tento klient host"""
 	return is_host
 
 func get_is_connected() -> bool:
-	"""Vrátí true pokud je připojen"""
 	return is_connected
 
 func get_player_name(player_id: int) -> String:
-	"""Vrátí jméno hráče podle ID"""
 	if player_id == local_player_id:
 		return "Vy"
 	elif player_id in connected_peers:
