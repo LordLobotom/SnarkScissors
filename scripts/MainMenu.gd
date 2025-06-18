@@ -1,4 +1,3 @@
-# ===== OPRAVENÝ MainMenu.gd =====
 # MainMenu.gd
 # Hlavní menu s multiplayer funkcionalitou
 extends Control
@@ -141,7 +140,7 @@ func refresh_players_list():
 
 func add_player_to_list(player_id: int, player_name: String, ready: bool):
 	"""Přidá hráče do seznamu"""
-	var player_item = preload("res://scenes/PlayerListItem.tscn").instantiate()
+	var player_item = preload("res://scenes/UI/PlayerListItem.tscn").instantiate()
 	
 	player_item.get_node("HBox/NameLabel").text = player_name
 	player_item.get_node("HBox/StatusLabel").text = "Připraven" if ready else "Nepřipraven"
@@ -256,4 +255,22 @@ func _on_connection_failed():
 
 func _on_server_created():
 	"""Volá se když je server úspěšně vytvořen"""
-	connection_status_label.text = "Server vytvořen! Čekání na hrá
+	connection_status_label.text = "Server vytvořen! Čekání na hráče..."
+	await get_tree().process_frame
+	show_lobby_panel()
+
+func _on_player_connected(peer_id: int):
+	"""Volá se když se připojí nový hráč"""
+	print("Nový hráč připojen: ", peer_id)
+	update_lobby_status()
+	refresh_players_list()
+
+func _on_player_disconnected(peer_id: int):
+	"""Volá se když se hráč odpojí"""
+	print("Hráč se odpojil: ", peer_id)
+	update_lobby_status()
+	refresh_players_list()
+	
+	# Pokud jsme v lobby a hráč se odpojil, zakázat start
+	if NetworkManager.is_host:
+		start_button.disabled = true
