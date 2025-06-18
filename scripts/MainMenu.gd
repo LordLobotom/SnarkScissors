@@ -1,3 +1,4 @@
+# ===== OPRAVENÝ MainMenu.gd =====
 # MainMenu.gd
 # Hlavní menu s multiplayer funkcionalitou
 extends Control
@@ -16,7 +17,6 @@ extends Control
 @onready var join_button: Button = $MainWindow/ConnectionPanel/VBox/JoinButton
 @onready var ip_input: LineEdit = $MainWindow/ConnectionPanel/VBox/IPContainer/IPInput
 @onready var port_input: SpinBox = $MainWindow/ConnectionPanel/VBox/PortContainer/PortInput
-@onready var connection_status: Label = $MainWindow/ConnectionPanel/VBox/StatusLabel
 
 # Lobby Panel UI
 @onready var players_list: VBoxContainer = $MainWindow/LobbyPanel/VBox/PlayersContainer/PlayersList
@@ -38,8 +38,15 @@ extends Control
 var current_panel: String = "connection"
 var is_ready: bool = false
 var player_items: Dictionary = {}
+var connection_status_label: Label
 
 func _ready():
+	# Vytvořit status label pro connection panel
+	connection_status_label = Label.new()
+	connection_status_label.text = "Připraveno k připojení"
+	connection_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	$MainWindow/ConnectionPanel/VBox.add_child(connection_status_label)
+	
 	# Nastavit NetworkManager referenci
 	NetworkManager.main_menu_ref = self
 	
@@ -92,7 +99,7 @@ func show_connection_panel():
 	connection_panel.visible = true
 	lobby_panel.visible = false
 	
-	connection_status.text = "Připraveno k připojení"
+	connection_status_label.text = "Připraveno k připojení"
 	back_btn.visible = false
 	next_btn.visible = false
 
@@ -121,11 +128,12 @@ func refresh_players_list():
 	"""Obnoví seznam hráčů v lobby"""
 	# Vyčistit existující položky
 	for item in player_items.values():
-		item.queue_free()
+		if is_instance_valid(item):
+			item.queue_free()
 	player_items.clear()
 	
 	# Přidat lokálního hráče
-	add_player_to_list(NetworkManager.local_player_id, "Vy", true)
+	add_player_to_list(NetworkManager.local_player_id, "Vy", is_ready)
 	
 	# Přidat ostatní hráče
 	for player in NetworkManager.get_connected_players():
@@ -133,7 +141,7 @@ func refresh_players_list():
 
 func add_player_to_list(player_id: int, player_name: String, ready: bool):
 	"""Přidá hráče do seznamu"""
-	var player_item = preload("res://ui/PlayerListItem.tscn").instantiate()
+	var player_item = preload("res://scenes/PlayerListItem.tscn").instantiate()
 	
 	player_item.get_node("HBox/NameLabel").text = player_name
 	player_item.get_node("HBox/StatusLabel").text = "Připraven" if ready else "Nepřipraven"
@@ -144,7 +152,7 @@ func add_player_to_list(player_id: int, player_name: String, ready: bool):
 
 func update_player_ready_status(player_id: int, ready: bool):
 	"""Aktualizuje ready status hráče"""
-	if player_id in player_items:
+	if player_id in player_items and is_instance_valid(player_items[player_id]):
 		var status_label = player_items[player_id].get_node("HBox/StatusLabel")
 		status_label.text = "Připraven" if ready else "Nepřipraven"
 		status_label.modulate = Color.GREEN if ready else Color.RED
@@ -160,7 +168,7 @@ func update_player_ready_status(player_id: int, ready: bool):
 
 func _on_host_pressed():
 	"""Handler pro Host button"""
-	connection_status.text = "Vytvářím server..."
+	connection_status_label.text = "Vytvářím server..."
 	host_button.disabled = true
 	join_button.disabled = true
 	
@@ -168,13 +176,13 @@ func _on_host_pressed():
 	var success = NetworkManager.create_server(port)
 	
 	if not success:
-		connection_status.text = "Chyba při vytváření serveru!"
+		connection_status_label.text = "Chyba při vytváření serveru!"
 		host_button.disabled = false
 		join_button.disabled = false
 
 func _on_join_pressed():
 	"""Handler pro Join button"""
-	connection_status.text = "Připojuji se..."
+	connection_status_label.text = "Připojuji se..."
 	host_button.disabled = true
 	join_button.disabled = true
 	
@@ -183,7 +191,7 @@ func _on_join_pressed():
 	var success = NetworkManager.join_server(ip, port)
 	
 	if not success:
-		connection_status.text = "Chyba při připojování!"
+		connection_status_label.text = "Chyba při připojování!"
 		host_button.disabled = false
 		join_button.disabled = false
 
@@ -192,6 +200,9 @@ func _on_ready_pressed():
 	is_ready = not is_ready
 	ready_button.text = "Zrušit připravenost" if is_ready else "Připraven"
 	NetworkManager.set_player_ready(is_ready)
+	
+	# Aktualizovat lokální zobrazení
+	update_player_ready_status(NetworkManager.local_player_id, is_ready)
 
 func _on_start_pressed():
 	"""Handler pro Start button (pouze host)"""
@@ -233,38 +244,16 @@ func _on_next_pressed():
 
 func _on_connection_established():
 	"""Volá se když klient úspěšně připojí"""
-	connection_status.text = "Připojeno k serveru!"
+	connection_status_label.text = "Připojeno k serveru!"
+	await get_tree().process_frame
 	show_lobby_panel()
 
 func _on_connection_failed():
 	"""Volá se když připojení selže"""
-	connection_status.text = "Připojení selhalo!"
+	connection_status_label.text = "Připojení selhalo!"
 	host_button.disabled = false
 	join_button.disabled = false
 
 func _on_server_created():
 	"""Volá se když je server úspěšně vytvořen"""
-	connection_status.text = "Server vytvořen! Čekání na hráče..."
-	show_lobby_panel()
-
-func _on_player_connected(peer_id: int):
-	"""Volá se když se připojí nový hráč"""
-	print("Nový hráč v lobby: ", peer_id)
-	refresh_players_list()
-	update_lobby_status()
-
-func _on_player_disconnected(peer_id: int):
-	"""Volá se když se hráč odpojí"""
-	print("Hráč opustil lobby: ", peer_id)
-	refresh_players_list()
-	update_lobby_status()
-
-# ========================================
-# UTILITY
-# ========================================
-
-func _notification(what):
-	"""Handler pro systémové notifikace"""
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		NetworkManager.disconnect_from_server()
-		get_tree().quit()
+	connection_status_label.text = "Server vytvořen! Čekání na hrá
