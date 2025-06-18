@@ -30,8 +30,8 @@ extends Control
 @onready var quit_btn: Button = $LeftMenu/QuitButton
 
 # Bottom Bar Buttons
-@onready var back_btn: Button = $BottomBar/BackButton
-@onready var next_btn: Button = $BottomBar/NextButton
+@onready var back_btn: Button = $LeftMenu/BottomBar/BackButton
+@onready var next_btn: Button = $LeftMenu/BottomBar/NextButton
 
 # Stav
 var current_panel: String = "connection"
