@@ -1,0 +1,138 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg00ssrcp08bs"]
+
+[ext_resource type="Script" uid="uid://nf0sqndvpjnb" path="res://scripts/GameScene.gd" id="1_vh257"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 237.0
+grow_vertical = 2
+
+[node name="BackToLobbyButton" type="Button" parent="LeftMenu"]
+layout_mode = 2
+text = "Zpět do lobby"
+
+[node name="SettingsButton" type="Button" parent="LeftMenu"]
+layout_mode = 2
+text = "Nastavení"
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -135.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="DisconnectButton" type="Button" parent="BottomBar"]
+layout_mode = 2
+text = "Odpojit"
+
+[node name="MainWindow" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.594
+anchor_top = 0.376
+anchor_right = 0.594
+anchor_bottom = 0.376
+offset_left = -514.32
+offset_top = -272.72
+offset_right = 514.68
+offset_bottom = 304.28
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GamePanel" type="Panel" parent="MainWindow"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainWindow/GamePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -99.5
+offset_top = -11.5
+offset_right = 99.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RoundInfoLabel" type="Label" parent="MainWindow/GamePanel/VBox"]
+layout_mode = 2
+text = "Kolo 1 z 5"
+
+[node name="CountdownLabel" type="Label" parent="MainWindow/GamePanel/VBox"]
+layout_mode = 2
+text = "Připravte se..."
+
+[node name="ChoicesContainer" type="HBoxContainer" parent="MainWindow/GamePanel/VBox"]
+layout_mode = 2
+
+[node name="RockButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+layout_mode = 2
+text = "Kámen"
+
+[node name="PaperButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+layout_mode = 2
+text = "Papír"
+
+[node name="ScissorsButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+layout_mode = 2
+text = "Nůžky"
+
+[node name="ScorePanel" type="Panel" parent="MainWindow/GamePanel/VBox"]
+layout_mode = 2
+
+[node name="ScoreLabel" type="Label" parent="MainWindow/GamePanel/VBox/ScorePanel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "SKÓRE: Vy: 0 | Soupeř: 0"
+
+[node name="ResultPanel" type="Panel" parent="MainWindow/GamePanel/VBox"]
+visible = false
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainWindow/GamePanel/VBox/ResultPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResultLabel" type="Label" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+layout_mode = 2
+text = "VÝSLEDEK"
+
+[node name="PlayersChoices" type="VBoxContainer" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+layout_mode = 2
+
+[node name="NextRoundButton" type="Button" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+layout_mode = 2
+text = "NextRoundButton"
+script = ExtResource("1_vh257")
