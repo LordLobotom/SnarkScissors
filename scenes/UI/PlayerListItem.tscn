@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://3crvex40j5nr"]
+[gd_scene load_steps=2 format=3 uid="uid://3crvex40j5nr"]
+
+[ext_resource type="Script" uid="uid://dxkuf2o7mqqqk" path="res://scripts/PlayerListItem.gd" id="1_kyv0l"]
 
 [node name="PlayerListItem" type="Control"]
 layout_mode = 3
@@ -6,6 +8,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 140.0
 grow_horizontal = 2
+script = ExtResource("1_kyv0l")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 1
