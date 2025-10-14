@@ -8,19 +8,19 @@ extends Control
 
 var player_id: int = -1
 
-func setup(id: int, player_name: String, ready: bool):
+func setup(id: int, player_name: String, is_ready: bool):
 	player_id = id
 	name_label.text = player_name
-	meta_label.text = "Connected" if ready else "Waiting for ready"
+	meta_label.text = "Connected" if is_ready else "Waiting for ready"
 	avatar_rect.color = _color_for_player(id)
-	update_status(ready)
+	update_status(is_ready)
 
-func update_status(ready: bool):
-	var text = "Ready" if ready else "Not ready"
+func update_status(is_ready: bool):
+	var text = "Ready" if is_ready else "Not ready"
 	status_badge.text = text
-	var badge_color = Color(0.43, 0.85, 0.53) if ready else Color(0.89, 0.46, 0.42)
+	var badge_color = Color(0.43, 0.85, 0.53) if is_ready else Color(0.89, 0.46, 0.42)
 	status_badge.add_theme_color_override("font_color", badge_color)
-	meta_label.text = "Ready to launch" if ready else "Needs to lock in"
+	meta_label.text = "Ready to launch" if is_ready else "Needs to lock in"
 
 func _color_for_player(id: int) -> Color:
 	var palette = [

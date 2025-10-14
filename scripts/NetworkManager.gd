@@ -135,15 +135,15 @@ func sync_player_choice(player_id: int, choice: String):
 	if game_scene_ref:
 		game_scene_ref.receive_player_choice(player_id, choice)
 
-@rpc("any_peer", "call_local", "reliable") 
-func sync_player_ready(player_id: int, ready: bool):
+@rpc("any_peer", "call_local", "reliable")
+func sync_player_ready(player_id: int, is_ready: bool):
 	"""Synchronizuje ready stav hráče"""
-	print("Aktualizace ready stavu hráče ", player_id, ": ", ready)
+	print("Aktualizace ready stavu hráče ", player_id, ": ", is_ready)
 	if player_id in connected_peers:
-		connected_peers[player_id]["ready"] = ready
-	
+		connected_peers[player_id]["ready"] = is_ready
+
 	if main_menu_ref:
-		main_menu_ref.update_player_ready_status(player_id, ready)
+		main_menu_ref.update_player_ready_status(player_id, is_ready)
 
 @rpc("authority", "call_local", "reliable")
 func start_game():
@@ -207,10 +207,10 @@ func send_player_choice(choice: String):
 	print("Posílám volbu: ", choice)
 	sync_player_choice.rpc(local_player_id, choice)
 
-func set_player_ready(ready: bool):
+func set_player_ready(is_ready: bool):
 	"""Nastaví ready stav lokálního hráče"""
-	print("Nastavuji ready stav: ", ready)
-	sync_player_ready.rpc(local_player_id, ready)
+	print("Nastavuji ready stav: ", is_ready)
+	sync_player_ready.rpc(local_player_id, is_ready)
 
 # NOVÉ FUNKCE PRO SYNCHRONIZACI
 func start_round_for_all():

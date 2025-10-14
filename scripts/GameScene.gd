@@ -362,7 +362,7 @@ func _display_player_choices(choices: Dictionary):
 	
 	for player_id in choices:
 		var choice_item = HBoxContainer.new()
-		choice_item.alignment = BoxContainer.ALIGNMENT_CENTER_LEFT
+		choice_item.alignment = BoxContainer.ALIGNMENT_BEGIN
 		choice_item.theme = theme
 		choice_item.add_theme_constant_override("separation", 12)
 		
