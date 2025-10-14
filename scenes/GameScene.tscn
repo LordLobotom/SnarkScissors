@@ -1,139 +1,323 @@
-[gd_scene load_steps=2 format=3 uid="uid://bg00ssrcp08bs"]
+[gd_scene load_steps=3 format=3 uid="uid://bg00ssrcp08bs"]
 
-[ext_resource type="Script" uid="uid://nf0sqndvpjnb" path="res://scripts/GameScene.gd" id="1_vh257"]
+[ext_resource type="Script" path="res://scripts/GameScene.gd" id="1"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
 
-[node name="MainMenu" type="Control"]
+[node name="GameScene" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_vh257")
+theme = ExtResource("2")
+script = ExtResource("1")
 
-[node name="LeftMenu" type="VBoxContainer" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 237.0
-grow_vertical = 2
-
-[node name="BackToLobbyButton" type="Button" parent="LeftMenu"]
-layout_mode = 2
-text = "Zpět do lobby"
-
-[node name="SettingsButton" type="Button" parent="LeftMenu"]
-layout_mode = 2
-text = "Nastavení"
-
-[node name="DisconnectButton" type="Button" parent="LeftMenu"]
-layout_mode = 2
-text = "Odpojit"
-
-[node name="BottomBar" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 252.0
-offset_top = -135.0
-grow_horizontal = 2
-grow_vertical = 0
+color = Color(0.05, 0.06, 0.09, 1)
 
-[node name="MainWindow" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.594
-anchor_top = 0.376
-anchor_right = 0.594
-anchor_bottom = 0.376
-offset_left = -514.32
-offset_top = -272.72
-offset_right = 514.68
-offset_bottom = 304.28
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GamePanel" type="Panel" parent="MainWindow"]
+[node name="MainMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_top = 32
 
-[node name="VBox" type="VBoxContainer" parent="MainWindow/GamePanel"]
+[node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 28
+
+[node name="HeaderBar" type="HBoxContainer" parent="MainMargin/MainVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="BackToLobbyButton" type="Button" parent="MainMargin/MainVBox/HeaderBar"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Back to Lobby"
+
+[node name="HeaderInfo" type="VBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="HeaderTitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "SnarkScissors Arena"
+
+[node name="HeaderSubtitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stay snappy, throw smarter than your rival."
+autowrap_mode = 2
+
+[node name="HeaderSpacer" type="Control" parent="MainMargin/MainVBox/HeaderBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeaderButtons" type="HBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SettingsButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
+layout_mode = 2
+text = "Settings"
+
+[node name="DisconnectButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
+layout_mode = 2
+text = "Disconnect"
+
+[node name="RoundSummary" type="Panel" parent="MainMargin/MainVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SummaryMargin" type="MarginContainer" parent="MainMargin/MainVBox/RoundSummary"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -99.5
-offset_top = -11.5
-offset_right = 99.5
-offset_bottom = 11.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 18
 
-[node name="RoundInfoLabel" type="Label" parent="MainWindow/GamePanel/VBox"]
+[node name="SummaryHBox" type="HBoxContainer" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin"]
 layout_mode = 2
-text = "Kolo 1 z 5"
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
 
-[node name="CountdownLabel" type="Label" parent="MainWindow/GamePanel/VBox"]
+[node name="RoundInfoLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
 layout_mode = 2
-text = "Připravte se..."
+size_flags_horizontal = 3
+theme_type_variation = "subtitle"
+text = "Round 1 of 5"
 
-[node name="ChoicesContainer" type="HBoxContainer" parent="MainWindow/GamePanel/VBox"]
+[node name="CountdownLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
 layout_mode = 2
+size_flags_horizontal = 2
+text = "Get ready..."
+horizontal_alignment = 2
 
-[node name="RockButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+[node name="Arena" type="HBoxContainer" parent="MainMargin/MainVBox"]
 layout_mode = 2
-text = "Kámen"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 24
 
-[node name="PaperButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+[node name="PlayerCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
 layout_mode = 2
-text = "Papír"
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="ScissorsButton" type="Button" parent="MainWindow/GamePanel/VBox/ChoicesContainer"]
+[node name="PlayerMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/PlayerCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 24
+
+[node name="PlayerVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin"]
 layout_mode = 2
-text = "Nůžky"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
 
-[node name="ScorePanel" type="Panel" parent="MainWindow/GamePanel/VBox"]
+[node name="PlayerNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "You"
 
-[node name="ScoreLabel" type="Label" parent="MainWindow/GamePanel/VBox/ScorePanel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "SKÓRE: Vy: 0 | Soupeř: 0"
+[node name="PlayerScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Wins: 0"
 
-[node name="ResultPanel" type="Panel" parent="MainWindow/GamePanel/VBox"]
+[node name="PlayerLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last throw: —"
+
+[node name="CenterStage" type="Panel" parent="MainMargin/MainVBox/Arena"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="CenterMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/CenterStage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 24
+
+[node name="CenterVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="CountdownHeadline" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "Throw when ready"
+horizontal_alignment = 1
+
+[node name="ChoiceButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="RockButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Rock"
+
+[node name="PaperButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Paper"
+
+[node name="ScissorsButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Scissors"
+
+[node name="ChoiceHint" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select your throw before the timer expires."
+horizontal_alignment = 1
+
+[node name="OpponentCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OpponentMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/OpponentCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 24
+
+[node name="OpponentVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="OpponentNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "Opponent"
+horizontal_alignment = 2
+
+[node name="OpponentScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Wins: 0"
+horizontal_alignment = 2
+
+[node name="OpponentLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Last throw: —"
+horizontal_alignment = 2
+
+[node name="ScoreBar" type="Panel" parent="MainMargin/MainVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScoreMargin" type="MarginContainer" parent="MainMargin/MainVBox/ScoreBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 16
+
+[node name="ScoreLabel" type="Label" parent="MainMargin/MainVBox/ScoreBar/ScoreMargin"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Score: You 0 — Opponent 0"
+horizontal_alignment = 1
+
+[node name="ResultsCard" type="Panel" parent="MainMargin/MainVBox"]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="VBox" type="VBoxContainer" parent="MainWindow/GamePanel/VBox/ResultPanel"]
+[node name="ResultMargin" type="MarginContainer" parent="MainMargin/MainVBox/ResultsCard"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 24
 
-[node name="ResultLabel" type="Label" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+[node name="ResultVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin"]
 layout_mode = 2
-text = "VÝSLEDEK"
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
 
-[node name="PlayersChoices" type="VBoxContainer" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+[node name="ResultLabel" type="Label" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "Result"
+horizontal_alignment = 1
 
-[node name="NextRoundButton" type="Button" parent="MainWindow/GamePanel/VBox/ResultPanel/VBox"]
+[node name="PlayersChoices" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
 layout_mode = 2
-text = "Další kolo"
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="NextRoundButton" type="Button" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Next Round"

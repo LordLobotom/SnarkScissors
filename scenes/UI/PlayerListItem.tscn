@@ -1,25 +1,72 @@
-[gd_scene load_steps=2 format=3 uid="uid://3crvex40j5nr"]
+[gd_scene load_steps=3 format=3 uid="uid://3crvex40j5nr"]
 
-[ext_resource type="Script" uid="uid://dxkuf2o7mqqqk" path="res://scripts/PlayerListItem.gd" id="1_kyv0l"]
+[ext_resource type="Script" path="res://scripts/PlayerListItem.gd" id="1"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
 
 [node name="PlayerListItem" type="Control"]
 layout_mode = 3
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 495.0
-offset_bottom = 73.0
 grow_horizontal = 2
-script = ExtResource("1_kyv0l")
+theme = ExtResource("2")
+custom_minimum_size = Vector2(0, 80)
+script = ExtResource("1")
 
-[node name="HBox" type="HBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 150.0
-offset_bottom = 23.0
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="NameLabel" type="Label" parent="HBox"]
+[node name="RowMargin" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 12
+
+[node name="Row" type="HBoxContainer" parent="Panel/RowMargin"]
 layout_mode = 2
-text = "Jméno hráče"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
 
-[node name="StatusLabel" type="Label" parent="HBox"]
+[node name="Avatar" type="ColorRect" parent="Panel/RowMargin/Row"]
 layout_mode = 2
-text = "Status"
+custom_minimum_size = Vector2(52, 52)
+color = Color(0.29, 0.37, 0.92, 1)
+corner_radius_bottom_left = 18
+corner_radius_bottom_right = 18
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+
+[node name="Labels" type="VBoxContainer" parent="Panel/RowMargin/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="NameLabel" type="Label" parent="Panel/RowMargin/Row/Labels"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = "title"
+text = "Player name"
+
+[node name="MetaLabel" type="Label" parent="Panel/RowMargin/Row/Labels"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Awaiting ready state"
+autowrap_mode = 2
+
+[node name="StatusBadge" type="Label" parent="Panel/RowMargin/Row"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme_override_constants/minimum_size = Vector2(160, 0)
+text = "Ready"
+horizontal_alignment = 2
