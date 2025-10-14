@@ -102,15 +102,15 @@ func refresh_players_list():
 	for player in NetworkManager.get_connected_players():
 		add_player_to_list(player.id, player.name, player.ready)
 
-func add_player_to_list(player_id: int, player_name: String, ready: bool):
+func add_player_to_list(player_id: int, player_name: String, is_ready: bool):
 	var player_item: Control = PLAYER_ITEM_SCENE.instantiate()
 	players_list.add_child(player_item)
-	player_item.setup(player_id, player_name, ready)
+	player_item.setup(player_id, player_name, is_ready)
 	player_items[player_id] = player_item
 
-func update_player_ready_status(player_id: int, ready: bool):
+func update_player_ready_status(player_id: int, is_ready: bool):
 	if player_id in player_items and is_instance_valid(player_items[player_id]):
-		player_items[player_id].update_status(ready)
+		player_items[player_id].update_status(is_ready)
 
 	if NetworkManager.is_host:
 		var can_start = NetworkManager.is_all_players_ready() and NetworkManager.get_player_count() >= 2
