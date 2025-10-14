@@ -44,11 +44,13 @@ var local_choice: String = ""
 var round_active: bool = false
 var countdown_time: float = 0.0
 var countdown_timer: Timer
+var next_round_timer: Timer
 var game_phase: String = "waiting"  # waiting, countdown, choosing, results
 
 # Constants
 const CHOICE_TIME = 10.0
 const COUNTDOWN_TIME = 3.0
+const NEXT_ROUND_DELAY = 4.0
 
 func _ready():
 	NetworkManager.game_scene_ref = self
@@ -62,6 +64,13 @@ func _ready():
 	countdown_timer.wait_time = 1.0
 	countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(countdown_timer)
+
+	# Create next round timer for auto-advance
+	next_round_timer = Timer.new()
+	next_round_timer.one_shot = true
+	next_round_timer.wait_time = NEXT_ROUND_DELAY
+	next_round_timer.timeout.connect(_on_next_round_timer_timeout)
+	add_child(next_round_timer)
 
 	result_panel.visible = false
 	_set_choice_buttons_enabled(false)
@@ -103,12 +112,14 @@ func start_new_round():
 	"""Starts a new round (host only)"""
 	if not NetworkManager.is_host:
 		return
-	
+
 	print("HOST: Starting round ", current_round)
-	
-	# Broadcast start to all peers
+
+	# Sync round number to all clients first
+	NetworkManager.sync_round_start.rpc(current_round)
+
+	# Then start countdown
 	NetworkManager.start_countdown_for_all(COUNTDOWN_TIME)
-	player_choices.clear()
 
 # ========================================
 # SYNCED EVENTS FOR ALL PEERS
@@ -123,21 +134,25 @@ func sync_start_new_round(round_number: int):
 func sync_countdown_phase(countdown_time_param: float):
 	"""Syncs the countdown phase"""
 	print("SYNC: Countdown phase - ", countdown_time_param, "s")
-	
+
 	game_phase = "countdown"
 	countdown_time = countdown_time_param
-	
+
+	# Clear previous round state
+	local_choice = ""
+	player_choices.clear()
+
 	# Reset UI
 	result_panel.visible = false
 	countdown_label.visible = true
 	_set_choice_buttons_enabled(false)
-	
+
 	# Update copy for the countdown phase
 	round_info.text = "Round " + str(current_round) + " of " + str(max_rounds)
 	countdown_label.text = "Get ready..."
 	countdown_headline.text = "Countdown"
 	choice_hint.text = "Throws unlock once the countdown finishes."
-	
+
 	# Start the countdown ticking
 	countdown_timer.start()
 
@@ -352,8 +367,14 @@ func _show_round_results(winner_id: int, results: Dictionary):
 	
 	_display_player_choices(results.choices)
 	_update_score_display()
-	
-	next_round_btn.visible = NetworkManager.is_host and not _is_game_finished()
+
+	# Show next round button for host, or auto-advance after delay
+	var game_finished = _is_game_finished()
+	next_round_btn.visible = NetworkManager.is_host and not game_finished
+
+	# Auto-advance to next round if not finished
+	if NetworkManager.is_host and not game_finished:
+		next_round_timer.start()
 
 func _display_player_choices(choices: Dictionary):
 	"""Builds a quick summary of each throw"""
@@ -427,18 +448,24 @@ func _is_game_finished() -> bool:
 func _show_game_results():
 	"""Displays final game banner"""
 	var winner_id = _get_game_winner()
-	
+
 	if winner_id == -1:
-		result_label.text = "Match ends in a draw!"
+		result_label.text = "Match ends in a draw!\n\nClick 'Back to Lobby' to play again"
 		result_label.modulate = Color(0.94, 0.83, 0.39)
 	elif winner_id == NetworkManager.local_player_id:
-		result_label.text = "You take the match!"
+		result_label.text = "You take the match!\n\nClick 'Back to Lobby' to play again"
 		result_label.modulate = Color(0.55, 0.9, 0.61)
 	else:
-		result_label.text = "Defeat this time!"
+		result_label.text = "Defeat this time!\n\nClick 'Back to Lobby' to play again"
 		result_label.modulate = Color(0.93, 0.45, 0.45)
-	
+
+	# Hide next round button and stop auto-advance timer
 	next_round_btn.visible = false
+	if next_round_timer.time_left > 0:
+		next_round_timer.stop()
+
+	# Make back to lobby button more prominent
+	back_to_lobby_btn.disabled = false
 
 func _get_game_winner() -> int:
 	"""Returns the overall match winner"""
@@ -492,7 +519,15 @@ func _get_choice_icon(choice: String) -> String:
 func _on_next_round_pressed():
 	"""Host-only handler to kick off the next round"""
 	if NetworkManager.is_host:
-		NetworkManager.start_countdown_for_all(COUNTDOWN_TIME)
+		# Stop auto-advance timer if running
+		if next_round_timer.time_left > 0:
+			next_round_timer.stop()
+		start_new_round()
+
+func _on_next_round_timer_timeout():
+	"""Auto-advance to next round after delay"""
+	if NetworkManager.is_host:
+		start_new_round()
 
 func _on_back_to_lobby_pressed():
 	"""Returns to the lobby scene"""
