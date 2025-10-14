@@ -90,19 +90,20 @@ func disconnect_from_server():
 # SÍŤOVÉ EVENT HANDLERY
 # ========================================
 
+
 func _on_peer_connected(peer_id: int):
 	"""Volá se když se připojí nový hráč"""
-	print("Hráč se připojil: ", peer_id)
+	print("Player joined: ", peer_id)
 	connected_peers[peer_id] = {
 		"id": peer_id,
-		"name": "Hráč " + str(peer_id),
+		"name": "Player " + str(peer_id),
 		"ready": false
 	}
 	player_connected.emit(peer_id)
 
 func _on_peer_disconnected(peer_id: int):
 	"""Volá se když se hráč odpojí"""
-	print("Hráč se odpojil: ", peer_id)
+	print("Player left: ", peer_id)
 	connected_peers.erase(peer_id)
 	player_disconnected.emit(peer_id)
 
@@ -244,8 +245,8 @@ func get_is_connected() -> bool:
 
 func get_player_name(player_id: int) -> String:
 	if player_id == local_player_id:
-		return "Vy"
+		return "You"
 	elif player_id in connected_peers:
 		return connected_peers[player_id]["name"]
 	else:
-		return "Neznámý hráč"
+		return "Unknown player"

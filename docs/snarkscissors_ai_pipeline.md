@@ -1,44 +1,44 @@
 # SnarkScissors - AI Art Pipeline & UI/UX Design
-## Shake Fidget + Darkest Dungeon Style Consistency
+## Shake and Fidget + Darkest Dungeon Style Consistency
 
-### Doporučené AI Nástroje (Ranked)
+### Recommended AI Tools (Ranked)
 
 #### 1. Midjourney V6 (TOP Choice)
-- Pro nejlepší projekt - Character Reference --cref parameter umožňuje consistent characters napříč obrázky
-- Kombinace --sref style reference a --cref pro consistent style i charaktery
-- Výborné pro cartoon/fantasy style podobný Shake Fidget
+- Best for the project - Character Reference --cref parameter allows consistent characters across images
+- Combination of --sref style reference and --cref for consistent style and characters
+- Excellent for cartoon/fantasy style similar to Shake and Fidget
 
-**Setup pro konzistenci:**
+**Setup for consistency:**
 ```
 /imagine [character description] --cref [reference_image_URL] --sref [style_reference_URL] --cw 100 --ar 1:1
 ```
 
-**Pricing:** $10/měsíc Basic plan = 200 generací
+**Pricing:** $10/month Basic plan = 200 generations
 
 #### 2. Consistent Character AI
-- Specializovaný nástroj pro consistent characters bez prompt engineering
-- Perfektní pro začátečníky
-- Jednodušší než Midjourney, ale menší kreativní kontrola
+- Specialized tool for consistent characters without prompt engineering
+- Perfect for beginners
+- Simpler than Midjourney, but less creative control
 
-#### 3. Layer.ai Pro Game Development
-- Specializovaný na game assets, rychlé iterations pro indie vývoj
-- Expensive, ale worth it pokud potřebujeme volume
+#### 3. Layer.ai For Game Development
+- Specialized in game assets, fast iterations for indie development
+- Expensive, but worth it if we need volume
 
 #### 4. CGDream Free Alternative
-- Free consistent character generator s professional výsledky
-- Dobrý pro experimenty a prototyping
+- Free consistent character generator with professional results
+- Good for experiments and prototyping
 
 ### Art Style Definition
 
-#### Shake Fidget Elements:
-- **Proporce:** Chibi-style s velkými hlavami
-- **Barvy:** Sýté, kontrastní paleta
+#### Shake and Fidget Elements:
+- **Proportions:** Chibi-style with large heads
+- **Colors:** Vibrant, contrasting palette
 - **Lineart:** Thick outlines, hand-drawn feel
 - **Textures:** Soft shading, minimal detail
 - **Humor:** Exaggerated expressions, cartoonish
 
 #### Darkest Dungeon Elements:
-- **Atmosféra:** Dramatic lighting, shadows
+- **Atmosphere:** Dramatic lighting, shadows
 - **Character Design:** Distinctive silhouettes
 - **Color Grading:** Rich, saturated tones
 - **Composition:** Dynamic poses, action-oriented
@@ -79,7 +79,7 @@ Examples:
 
 ### UI/UX Mockup Design
 
-#### Main Game Interface (Shake Fidget Layout)
+#### Main Game Interface (Shake and Fidget Layout)
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ SNARKSCISSORS                                               │
@@ -142,7 +142,7 @@ Examples:
 
 **Basic Gestures (Free):**
 - Rock: Simple fist pump
-- Paper: Flat hand wave  
+- Paper: Flat hand wave
 - Scissors: Peace sign with attitude
 
 **Themed Gesture Sets (Premium):**
@@ -267,7 +267,7 @@ cartoon knight character throwing rock gesture, dynamic action pose, thick outli
 
 **Quality Benchmarks:**
 - Consistent character appearance across all images
-- Clear Shake Fidget + Darkest Dungeon style blend
+- Clear Shake and Fidget + Darkest Dungeon style blend
 - Modular customization system working
 - Professional-looking UI mockups ready
 
@@ -275,4 +275,4 @@ cartoon knight character throwing rock gesture, dynamic action pose, thick outli
 
 ---
 
-**SnarkScissors Art Pipeline je kompletně připravený pro realizaci!** 🎨✂️
+**SnarkScissors Art Pipeline is fully prepared for realization!** 🎨✂️

@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cgwcty5mxweob"]
+
+[sub_resource type="SystemFont" id="1"]
+font_names = PackedStringArray("Noto Sans", "Roboto", "Open Sans")
+
+[resource]
+default_base_scale = 1.0
+default_font = SubResource("1")
+default_font_size = 18

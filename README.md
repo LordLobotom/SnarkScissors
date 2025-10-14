@@ -1,62 +1,112 @@
-SnarkScissors 🪨📄✂️
+# SnarkScissors 🪨📄✂️
 
-Inovativní PvP hra transformující klasickou hru Rock-Paper-Scissors do moderního multiplayerového zážitku s komiksovou estetikou.
+An innovative PvP game transforming the classic Rock-Paper-Scissors game into a modern multiplayer experience with comic book aesthetics.
 
-📋 O hře
-SnarkScissors kombinuje jednoduchost známé mechaniky Rock-Paper-Scissors s přehnanými animacemi, plně customizatelnými avatary a vtipnými gesty. Vytvořte si unikátního bojovníka a bojujte v intenzivních soubojích proti hráčům z celého světa!
-✨ Klíčové funkce
+## About the Game
+SnarkScissors combines the simplicity of familiar Rock-Paper-Scissors mechanics with exaggerated animations, fully customizable avatars, and witty gestures. Create your unique fighter and battle in intense matches against players from around the world.
 
-🎮 Klasická RPS mechanika s možností rozšíření o Lizard-Spock variantu
-🎨 Plně přizpůsobitelné avatary s odemykatelnými gesty
-🏟️ Různorodé herní režimy - od 1v1 po masivní Battle Hall (50 hráčů!)
-🎭 Komiksová estetika s důrazem na humor a vizuální efekty
-🏆 Turnajové režimy s pořádanými soutěžemi
-👥 Týmové souboje 3v3 a 8v8
+## Key Features
+- 🎮 Classic RPS mechanics with optional Lizard-Spock variant expansion
+- 🎨 Fully customizable avatars with unlockable gestures
+- 🏟️ Various game modes from 1v1 to massive Battle Hall (50 players)
+- 🎭 Comic book aesthetics with emphasis on humor and visual effects
+- 🏆 Tournament modes with organized competitions
+- 👥 Team battles 3v3 and 8v8
 
-🎯 Aktuální stav - MVP
-Momentálně pracujeme na MVP verzi s následujícími funkcemi:
-✅ Implementováno
+## Current Status (MVP)
+Currently working on MVP version with the following features.
 
-Základní RPS mechanika (kámen, papír, nůžky)
-Local split-screen pro 2 hráče
-Systém kol na 3 výhry
-Základní UI s countdown timerem
-Score tracking
+### Implemented
+- Basic RPS mechanics (rock, paper, scissors)
+- Local multiplayer for 2 players (online via player-hosted sessions)
+- Best of 5 rounds system (first to 3 wins)
+- Basic UI with countdown and score tracking
+- Main menu with lobby system
 
-🚧 Ve vývoji
+### In Development
+- Extended animations and visual effects
+- Avatar customization system
+- Dedicated server architecture
+- Steam integration
 
-Rozšířené animace a vizuální efekty
-Avatar customization systém
-Online multiplayer funkcionalita
-Steam integrace
+## Technical Specifications
 
-🛠️ Technické specifikace
-Engine a nástroje
+### Engine and Tools
+- Game Engine: Godot 4.x
+- Language: GDScript
+- Primary Platform: PC (Steam)
+- Future Platforms: Web, mobile companion application
 
-Game Engine: Godot 4.x
-Jazyk: GDScript
-Platform: PC (Steam) - primární
-Budoucí platformy: Web, Mobile companion app
+### System Requirements (Preliminary)
+- OS: Windows 10/11, macOS 10.15+, Linux Ubuntu 18.04+
+- Processor: Intel i5-4590 / AMD FX 8350 or better
+- Memory: 4 GB RAM
+- Graphics: DirectX 11 compatible GPU
+- Network: Broadband internet connection
+- Storage: 2 GB available space
 
-Systémové požadavky (předběžné)
+## Installation and Setup
 
-OS: Windows 10/11, macOS 10.15+, Linux Ubuntu 18.04+
-Procesor: Intel i5-4590 / AMD FX 8350 nebo lepší
-Paměť: 4 GB RAM
-Grafika: DirectX 11 kompatibilní
-Síť: Širokopásmové připojení k internetu
-Úložný prostor: 2 GB volného místa
-
-🚀 Instalace a spuštění
-Pro vývojáře
-
-Klonování repozitáře:
-
-bashgit clone https://github.com/your-username/snarkscissors.git
+### Cloning the Repository
+```bash
+git clone https://github.com/LordLobotom/snarkscissors.git
 cd snarkscissors
+```
 
-Otevření v Godot:
+### Opening in Godot
+1. Download Godot 4.x from [godotengine.org](https://godotengine.org).
+2. Open the `project.godot` file in the editor.
+3. Run the main scene `MainMenu.tscn` or use the Play button for quick testing.
 
-Stáhněte Godot 4.x z godotengine.org
-Otevřete projekt.godot soubor
-Spusťte scénu Main.tscn
+### Running from Command Line
+```bash
+# Open in editor
+godot4 --path . --editor
+
+# Run directly
+godot4 --path . --run
+
+# Run headless (for testing)
+godot4 --headless --path . --run
+```
+
+## Project Structure
+```
+/
+├── scenes/          # Game scenes (.tscn files)
+├── scripts/         # GDScript files (.gd)
+├── ui/              # UI assets and resources
+├── docs/            # Design documents and roadmaps
+└── project.godot    # Godot project configuration
+```
+
+## Documentation
+- [Game Design Document](docs/snarkscissors_gdd.md) - Complete game design and features
+- [Technical Study](docs/snarkscissors_tech_study.md) - Technical implementation details
+- [Competitive Analysis](docs/snarkscissors_competitive.md) - Market analysis
+- [AI Art Pipeline](docs/snarkscissors_ai_pipeline.md) - Art asset creation workflow
+- [Project Roadmap](docs/snarkscissors_project_roadmap.md) - Development phases and milestones
+
+## Development Roadmap
+
+### Phase 1: Stabilize (Weeks 0-4)
+- Lock MVP experience
+- Smoke-test player hosting
+- Polish gameplay and UI
+
+### Phase 2: Harden (Weeks 4-10)
+- Improve resilience
+- Add telemetry
+- Prepare authoritative server flow
+
+### Phase 3: Scale (Weeks 10+)
+- Dedicated server tier
+- Matchmaking queue
+- Steam integration
+- Live-service features
+
+## Contributing
+This is currently a solo indie development project. For questions or suggestions, please open an issue.
+
+## License
+All rights reserved. This project is not open source.

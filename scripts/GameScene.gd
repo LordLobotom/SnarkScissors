@@ -1,39 +1,39 @@
 # GameScene.gd
-# Hlavní herní scéna pro multiplayer RPS
+# Multiplayer arena flow for the SnarkScissors duel
 extends Control
 
-# UI Reference
-@onready var left_menu: VBoxContainer = $LeftMenu
-@onready var bottom_bar: HBoxContainer = $BottomBar
-@onready var main_window: Panel = $MainWindow
+# Header & controls
+@onready var back_to_lobby_btn: Button = $MainMargin/MainVBox/HeaderBar/BackToLobbyButton
+@onready var settings_btn: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/SettingsButton
+@onready var disconnect_btn: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/DisconnectButton
 
-# Game UI
-@onready var game_panel: Panel = $MainWindow/GamePanel
-@onready var countdown_label: Label = $MainWindow/GamePanel/VBox/CountdownLabel
-@onready var round_info: Label = $MainWindow/GamePanel/VBox/RoundInfoLabel
-@onready var choices_container: HBoxContainer = $MainWindow/GamePanel/VBox/ChoicesContainer
+# Round summary
+@onready var round_info: Label = $MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox/RoundInfoLabel
+@onready var countdown_label: Label = $MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox/CountdownLabel
+@onready var countdown_headline: Label = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/CountdownHeadline
+@onready var choice_hint: Label = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceHint
 
-# Choice Buttons
-@onready var rock_btn: Button = $MainWindow/GamePanel/VBox/ChoicesContainer/RockButton
-@onready var paper_btn: Button = $MainWindow/GamePanel/VBox/ChoicesContainer/PaperButton
-@onready var scissors_btn: Button = $MainWindow/GamePanel/VBox/ChoicesContainer/ScissorsButton
+# Choice buttons
+@onready var choices_container: HBoxContainer = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons
+@onready var rock_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/RockButton
+@onready var paper_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/PaperButton
+@onready var scissors_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/ScissorsButton
 
-# Result Display
-@onready var result_panel: Panel = $MainWindow/GamePanel/VBox/ResultPanel
-@onready var result_label: Label = $MainWindow/GamePanel/VBox/ResultPanel/VBox/ResultLabel
-@onready var players_choices: VBoxContainer = $MainWindow/GamePanel/VBox/ResultPanel/VBox/PlayersChoices
-@onready var next_round_btn: Button = $MainWindow/GamePanel/VBox/ResultPanel/VBox/NextRoundButton
+# Player cards
+@onready var player_name_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerNameLabel
+@onready var player_score_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerScoreLabel
+@onready var player_last_choice_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerLastChoice
 
-# Score Display
-@onready var score_panel: Panel = $MainWindow/GamePanel/VBox/ScorePanel
-@onready var score_label: Label = $MainWindow/GamePanel/VBox/ScorePanel/ScoreLabel
+@onready var opponent_name_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentNameLabel
+@onready var opponent_score_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentScoreLabel
+@onready var opponent_last_choice_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentLastChoice
 
-# Left Menu
-@onready var back_to_lobby_btn: Button = $LeftMenu/BackToLobbyButton
-@onready var settings_btn: Button = $LeftMenu/SettingsButton
-
-# Bottom Bar
-@onready var disconnect_btn: Button = $LeftMenu/DisconnectButton
+# Score and results
+@onready var score_label: Label = $MainMargin/MainVBox/ScoreBar/ScoreMargin/ScoreLabel
+@onready var result_panel: Panel = $MainMargin/MainVBox/ResultsCard
+@onready var result_label: Label = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/ResultLabel
+@onready var players_choices: VBoxContainer = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/PlayersChoices
+@onready var next_round_btn: Button = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/NextRoundButton
 
 # Game State
 var current_round: int = 1
@@ -57,16 +57,20 @@ func _ready():
 	_connect_network_signals()
 	_initialize_scores()
 	
-	# Vytvořit timer
+	# Create the countdown timer once
 	countdown_timer = Timer.new()
 	countdown_timer.wait_time = 1.0
 	countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(countdown_timer)
-	
+
 	result_panel.visible = false
 	_set_choice_buttons_enabled(false)
-	
-	# Spustit první kolo pouze u hosta
+	player_name_label.text = _get_player_name(NetworkManager.local_player_id)
+	player_last_choice_label.text = "Last throw: —"
+	opponent_last_choice_label.text = "Last throw: —"
+	_refresh_opponent_card()
+
+	# Only the host should kick off the opening round
 	if NetworkManager.is_host:
 		call_deferred("start_new_round")
 
@@ -80,6 +84,7 @@ func _connect_ui_signals():
 	disconnect_btn.pressed.connect(_on_disconnect_pressed)
 
 func _connect_network_signals():
+	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
 
 func _initialize_scores():
@@ -91,33 +96,33 @@ func _initialize_scores():
 	_update_score_display()
 
 # ========================================
-# GAME FLOW - POUZE HOST
+# GAME FLOW - HOST-DRIVEN
 # ========================================
 
 func start_new_round():
-	"""Spustí nové kolo - pouze host"""
+	"""Starts a new round (host only)"""
 	if not NetworkManager.is_host:
 		return
 	
-	print("HOST: Spouštím kolo ", current_round)
+	print("HOST: Starting round ", current_round)
 	
-	# Poslat začátek kola všem
+	# Broadcast start to all peers
 	NetworkManager.start_countdown_for_all(COUNTDOWN_TIME)
 	player_choices.clear()
 
 # ========================================
-# SYNCHRONIZOVANÉ FUNKCE PRO VŠECHNY HRÁČE
+# SYNCED EVENTS FOR ALL PEERS
 # ========================================
 
 func sync_start_new_round(round_number: int):
-	"""Synchronizuje začátek nového kola"""
-	print("SYNC: Začínám kolo ", round_number)
+	"""Syncs the start of a new round"""
+	print("SYNC: Beginning round ", round_number)
 	current_round = round_number
 	_reset_round_state()
 
 func sync_countdown_phase(countdown_time_param: float):
-	"""Synchronizuje countdown fázi"""
-	print("SYNC: Countdown fáze - ", countdown_time_param, "s")
+	"""Syncs the countdown phase"""
+	print("SYNC: Countdown phase - ", countdown_time_param, "s")
 	
 	game_phase = "countdown"
 	countdown_time = countdown_time_param
@@ -127,44 +132,48 @@ func sync_countdown_phase(countdown_time_param: float):
 	countdown_label.visible = true
 	_set_choice_buttons_enabled(false)
 	
-	# Aktualizovat UI
-	round_info.text = "Kolo " + str(current_round) + " z " + str(max_rounds)
-	countdown_label.text = "Připravte se..."
+	# Update copy for the countdown phase
+	round_info.text = "Round " + str(current_round) + " of " + str(max_rounds)
+	countdown_label.text = "Get ready..."
+	countdown_headline.text = "Countdown"
+	choice_hint.text = "Throws unlock once the countdown finishes."
 	
-	# Spustit countdown timer
+	# Start the countdown ticking
 	countdown_timer.start()
 
 func sync_choice_phase(choice_time_param: float):
-	"""Synchronizuje fázi výběru"""
-	print("SYNC: Fáze výběru - ", choice_time_param, "s")
+	"""Syncs the choice phase"""
+	print("SYNC: Choice phase - ", choice_time_param, "s")
 	
 	game_phase = "choosing"
 	countdown_time = choice_time_param
 	round_active = true
 	
-	# Aktualizovat UI
-	countdown_label.text = "Vyberte svoji volbu!"
+	# Update copy for the choice phase
+	countdown_label.text = "Lock in your throw!"
+	countdown_headline.text = "Your move"
+	choice_hint.text = "Rock beats scissors. Paper beats rock. Scissors beat paper."
 	_set_choice_buttons_enabled(true)
 	
-	# Restart timer pro výběr
+	# Restart the timer for the choice duration
 	countdown_timer.start()
 
 func sync_round_end(winner_id: int, results: Dictionary):
-	"""Synchronizuje konec kola"""
-	print("SYNC: Konec kola, výherce: ", winner_id)
+	"""Syncs the end of the round"""
+	print("SYNC: Round finished, winner: ", winner_id)
 	
 	game_phase = "results"
 	round_active = false
 	countdown_timer.stop()
 	
-	# Aktualizovat skóre
+	# Update score bookkeeping
 	if winner_id in player_scores:
 		player_scores[winner_id] += 1
 	
-	# Zobrazit výsledky
+	# Display results locally
 	_show_round_results(winner_id, results)
 	
-	# Zkontrolovat konec hry
+	# Check if the match is over
 	if _is_game_finished():
 		_show_game_results()
 	else:
@@ -172,7 +181,7 @@ func sync_round_end(winner_id: int, results: Dictionary):
 			current_round += 1
 
 func _reset_round_state():
-	"""Resetuje stav kola"""
+	"""Resets transient round state"""
 	player_choices.clear()
 	local_choice = ""
 	round_active = false
@@ -183,7 +192,7 @@ func _reset_round_state():
 # ========================================
 
 func _on_countdown_tick():
-	"""Handler pro countdown timer - běží u všech hráčů"""
+	"""Handles countdown ticks on every peer"""
 	countdown_time -= 1.0
 	
 	if game_phase == "countdown":
@@ -191,39 +200,41 @@ func _on_countdown_tick():
 			countdown_label.text = str(int(countdown_time))
 		else:
 			countdown_timer.stop()
-			# Host spustí fázi výběru pro všechny
+			# Host triggers choice phase for everyone
 			if NetworkManager.is_host:
 				NetworkManager.start_choice_phase_for_all(CHOICE_TIME)
 	
 	elif game_phase == "choosing":
 		if countdown_time > 0:
-			countdown_label.text = "Zbývá: " + str(int(countdown_time)) + "s"
+			countdown_label.text = "Time left: " + str(int(countdown_time)) + "s"
 		else:
 			countdown_timer.stop()
-			# Pokud hráč nevybral, pošle náhodnou volbu
+			# Auto-pick when the player has not selected
 			if local_choice == "":
 				var choices = ["rock", "paper", "scissors"]
 				local_choice = choices[randi() % choices.size()]
 				NetworkManager.send_player_choice(local_choice)
 			
-			countdown_label.text = "Čekáme na vyhodnocení..."
+			countdown_label.text = "Waiting for resolution..."
 
 # ========================================
 # PLAYER ACTIONS
 # ========================================
 
 func _on_choice_selected(choice: String):
-	"""Handler pro výběr volby hráčem"""
+	"""Handles when the local player picks a throw"""
 	if game_phase != "choosing" or local_choice != "":
 		return
 	
-	print("Hráč vybral: ", choice)
+	print("Local player chose: ", choice)
 	local_choice = choice
 	player_choices[NetworkManager.local_player_id] = choice
+	player_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
 	
 	_set_choice_buttons_enabled(false)
 	NetworkManager.send_player_choice(choice)
-	countdown_label.text = "Čekáme na ostatní hráče..."
+	countdown_label.text = "Waiting for opponents..."
+	choice_hint.text = "Hang tight while everyone locks in."
 	
 	if _all_players_chose():
 		countdown_timer.stop()
@@ -231,17 +242,22 @@ func _on_choice_selected(choice: String):
 			_evaluate_round()
 
 func receive_player_choice(player_id: int, choice: String):
-	"""Přijme volbu od hráče"""
-	print("Přijal volbu od hráče ", player_id, ": ", choice)
+	"""Processes a received throw from a peer"""
+	print("Received choice from player ", player_id, ": ", choice)
 	player_choices[player_id] = choice
 	
-	# Host zkontroluje jestli všichni volili
+	if player_id == NetworkManager.local_player_id:
+		player_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
+	else:
+		opponent_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
+	
+	# Host checks if every peer has committed
 	if NetworkManager.is_host and _all_players_chose():
 		countdown_timer.stop()
 		_evaluate_round()
 
 func _all_players_chose() -> bool:
-	"""Zkontroluje jestli všichni hráči udělali volbu"""
+	"""Checks whether every active player has locked in"""
 	var expected_players = _get_active_players()
 	for player_id in expected_players:
 		if player_id not in player_choices:
@@ -249,11 +265,11 @@ func _all_players_chose() -> bool:
 	return true
 
 func _get_active_players() -> Array:
-	"""Vrátí seznam všech aktivních hráčů ve hře"""
+	"""Returns the peer IDs expected to submit a choice"""
 	var active_players = []
-	# Přidat lokálního hráče
+	# Start with the local peer
 	active_players.append(NetworkManager.local_player_id)
-	# Přidat všechny připojené hráče  
+	# Append remote peers tracked by the NetworkManager
 	for peer_id in NetworkManager.connected_peers:
 		if peer_id != NetworkManager.local_player_id:
 			active_players.append(peer_id)
@@ -261,23 +277,23 @@ func _get_active_players() -> Array:
 	return active_players
 
 func _evaluate_round():
-	"""Vyhodnotí kolo - pouze host"""
+	"""Evaluates the round outcome (host only)"""
 	if not NetworkManager.is_host:
 		return
 	
-	print("HOST: Vyhodnocuji kolo...")
+	print("HOST: Evaluating round...")
 	
 	var results = _calculate_results()
 	var winner_id = results.winner_id
 	
-	# Poslat výsledky všem hráčům
+	# Broadcast the results to every peer
 	NetworkManager.end_round_for_all(winner_id, results)
 
 func _calculate_results() -> Dictionary:
-	"""Vypočítá výsledky kola"""
+	"""Calculates the round outcome data"""
 	var results = {
 		"winner_id": -1,
-		"winner_name": "Remíza",
+		"winner_name": "Draw",
 		"choices": player_choices.duplicate()
 	}
 	
@@ -300,7 +316,7 @@ func _calculate_results() -> Dictionary:
 	return results
 
 func _get_rps_winner(choice1: String, choice2: String) -> int:
-	"""Vrátí výherce RPS"""
+	"""Resolves a simple rock-paper-scissors duel"""
 	if choice1 == choice2:
 		return 0
 	
@@ -320,19 +336,19 @@ func _get_rps_winner(choice1: String, choice2: String) -> int:
 # ========================================
 
 func _show_round_results(winner_id: int, results: Dictionary):
-	"""Zobrazí výsledky kola"""
+	"""Updates the round summary card with latest results"""
 	countdown_label.visible = false
 	result_panel.visible = true
 	
 	if winner_id == -1:
-		result_label.text = "REMÍZA!"
-		result_label.modulate = Color.YELLOW
+		result_label.text = "Round tied!"
+		result_label.modulate = Color(0.94, 0.83, 0.39)
 	elif winner_id == NetworkManager.local_player_id:
-		result_label.text = "VYHRÁLI JSTE!"
-		result_label.modulate = Color.GREEN
+		result_label.text = "You win the round!"
+		result_label.modulate = Color(0.55, 0.9, 0.61)
 	else:
-		result_label.text = "PROHRÁLI JSTE!"
-		result_label.modulate = Color.RED
+		result_label.text = "You lose the round!"
+		result_label.modulate = Color(0.93, 0.45, 0.45)
 	
 	_display_player_choices(results.choices)
 	_update_score_display()
@@ -340,12 +356,16 @@ func _show_round_results(winner_id: int, results: Dictionary):
 	next_round_btn.visible = NetworkManager.is_host and not _is_game_finished()
 
 func _display_player_choices(choices: Dictionary):
-	"""Zobrazí volby všech hráčů"""
+	"""Builds a quick summary of each throw"""
 	for child in players_choices.get_children():
 		child.queue_free()
 	
 	for player_id in choices:
 		var choice_item = HBoxContainer.new()
+		choice_item.alignment = BoxContainer.ALIGNMENT_CENTER_LEFT
+		choice_item.theme = theme
+		choice_item.add_theme_constant_override("separation", 12)
+		
 		var name_label = Label.new()
 		var choice_label = Label.new()
 		var icon_label = Label.new()
@@ -362,48 +382,66 @@ func _display_player_choices(choices: Dictionary):
 		players_choices.add_child(choice_item)
 
 func _set_choice_buttons_enabled(enabled: bool):
-	"""Povolí/zakáže choice buttons"""
+	"""Toggles the throw buttons"""
 	rock_btn.disabled = not enabled
 	paper_btn.disabled = not enabled
 	scissors_btn.disabled = not enabled
 
 func _update_score_display():
-	"""Aktualizuje zobrazení skóre"""
-	var score_text = "SKÓRE: "
-	var score_parts = []
+	"""Updates score ribbons and labels"""
+	var local_score = player_scores.get(NetworkManager.local_player_id, 0)
+	var opponent_id = _get_remote_player_id()
+	var score_parts: Array = []
 	
-	for player_id in player_scores:
-		var name = _get_player_name(player_id)
-		var score = player_scores[player_id]
-		score_parts.append(name + ": " + str(score))
+	player_score_label.text = "Wins: " + str(local_score)
+	score_parts.append("You " + str(local_score))
 	
-	score_label.text = score_text + " | ".join(score_parts)
+	if opponent_id != -1:
+		var opponent_score = player_scores.get(opponent_id, 0)
+		opponent_score_label.text = "Wins: " + str(opponent_score)
+		score_parts.append("Opponent " + str(opponent_score))
+	else:
+		opponent_score_label.text = "Waiting for opponent"
+	
+	score_label.text = "Score: " + " • ".join(score_parts)
+	_refresh_opponent_card()
+
+func _refresh_opponent_card():
+	var opponent_id = _get_remote_player_id()
+	if opponent_id != -1:
+		var opponent_data = NetworkManager.connected_peers.get(opponent_id, null)
+		if opponent_data is Dictionary and opponent_data.has("name"):
+			opponent_name_label.text = str(opponent_data["name"])
+		else:
+			opponent_name_label.text = "Opponent"
+	else:
+		opponent_name_label.text = "Opponent"
 
 func _is_game_finished() -> bool:
-	"""Zkontroluje jestli je hra ukončená"""
+	"""Checks if a match-ending condition is met"""
 	for score in player_scores.values():
 		if score >= 3:
 			return true
 	return current_round > max_rounds
 
 func _show_game_results():
-	"""Zobrazí finální výsledky hry"""
+	"""Displays final game banner"""
 	var winner_id = _get_game_winner()
 	
 	if winner_id == -1:
-		result_label.text = "HRA SKONČILA REMÍZOU!"
-		result_label.modulate = Color.YELLOW
+		result_label.text = "Match ends in a draw!"
+		result_label.modulate = Color(0.94, 0.83, 0.39)
 	elif winner_id == NetworkManager.local_player_id:
-		result_label.text = "VYHRÁLI JSTE HRU!"
-		result_label.modulate = Color.GREEN
+		result_label.text = "You take the match!"
+		result_label.modulate = Color(0.55, 0.9, 0.61)
 	else:
-		result_label.text = "PROHRÁLI JSTE HRU!"
-		result_label.modulate = Color.RED
+		result_label.text = "Defeat this time!"
+		result_label.modulate = Color(0.93, 0.45, 0.45)
 	
 	next_round_btn.visible = false
 
 func _get_game_winner() -> int:
-	"""Vrátí ID výherce hry"""
+	"""Returns the overall match winner"""
 	var max_score = 0
 	var winner_id = -1
 	var tied = false
@@ -415,26 +453,32 @@ func _get_game_winner() -> int:
 			tied = false
 		elif player_scores[player_id] == max_score:
 			tied = true
-	
+
 	return -1 if tied else winner_id
 
+func _get_remote_player_id() -> int:
+	for player_id in player_scores:
+		if player_id != NetworkManager.local_player_id:
+			return player_id
+	return -1
+
 func _get_player_name(player_id: int) -> String:
-	"""Vrátí jméno hráče"""
+	"""Returns a display name for the given player"""
 	if player_id == NetworkManager.local_player_id:
-		return "Vy"
+		return "You"
 	else:
-		return "Soupeř"
+		return "Opponent"
 
 func _get_choice_display_name(choice: String) -> String:
-	"""Vrátí zobrazované jméno volby"""
+	"""Returns a readable string for a throw"""
 	match choice:
-		"rock": return "Kámen"
-		"paper": return "Papír"
-		"scissors": return "Nůžky"
-		_: return "Neznámé"
+		"rock": return "Rock"
+		"paper": return "Paper"
+		"scissors": return "Scissors"
+		_: return "Unknown"
 
 func _get_choice_icon(choice: String) -> String:
-	"""Vrátí ikonu pro volbu"""
+	"""Returns a fun emoji for a throw"""
 	match choice:
 		"rock": return "🪨"
 		"paper": return "📄"
@@ -446,34 +490,40 @@ func _get_choice_icon(choice: String) -> String:
 # ========================================
 
 func _on_next_round_pressed():
-	"""Handler pro Next Round button - pouze host"""
+	"""Host-only handler to kick off the next round"""
 	if NetworkManager.is_host:
 		NetworkManager.start_countdown_for_all(COUNTDOWN_TIME)
 
 func _on_back_to_lobby_pressed():
-	"""Handler pro Back to Lobby button"""
+	"""Returns to the lobby scene"""
 	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
 
 func _on_disconnect_pressed():
-	"""Handler pro Disconnect button"""
+	"""Disconnects from the current session"""
 	NetworkManager.disconnect_from_server()
 
 # ========================================
 # NETWORK EVENT HANDLERS
 # ========================================
 
+func _on_player_connected(peer_id: int):
+	"""Refreshes HUD when a new opponent joins mid-match"""
+	print("Player connected mid-match: ", peer_id)
+	_update_score_display()
+
 func _on_player_disconnected(peer_id: int):
-	"""Handler pro odpojení hráče"""
-	print("Hráč se odpojil během hry: ", peer_id)
-	
+	"""Notifies the player when an opponent leaves mid-match"""
+	print("Player disconnected mid-match: ", peer_id)
+	_update_score_display()
+
 	var notification = AcceptDialog.new()
-	notification.dialog_text = "Soupeř se odpojil. Hra byla ukončena."
+	notification.dialog_text = "Your opponent disconnected. The match has ended."
 	add_child(notification)
 	notification.popup_centered()
 	notification.confirmed.connect(func(): get_tree().change_scene_to_file("res://scenes/MainMenu.tscn"))
 
 func _notification(what):
-	"""Handler pro systémové notifikace"""
+	"""Ensures we cleanly disconnect on window close"""
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		NetworkManager.disconnect_from_server()
 		get_tree().quit()
