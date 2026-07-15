@@ -66,8 +66,8 @@
 - **Compliance:** Storing user data (profiles, match history) brings GDPR/CCPA obligations; plan legal review early.
 
 ## Next Steps
-1. Wire the new `Settings` CTA into a functional overlay (audio, input remap, theme toggle) and capture UX notes for future polish.
-2. Extend the shared theme across remaining scenes/modals and add lightweight hover/press animations to match the refreshed menu and arena.
-3. Validate the player-hosted flow end-to-end (headless smoke run + local friend test) and log gaps ahead of the Harden phase.
+1. Add short throw, impact, and result animations on top of the refreshed menu, lobby, arena, and functional audio/display settings overlay.
+2. Expand the audio pass with match-intensity music transitions and review the unused prepared effects against future gestures and cosmetics.
+3. Run an external-network friend test beyond the automated localhost ENet smoke check and document NAT/port-forwarding friction.
 4. Kick off the headless authoritative server spike, recording findings in `docs/snarkscissors_tech_study.md` and updating NetworkManager assumptions.
 5. Define success metrics (latency thresholds, crash-free sessions, ready-check timing) to govern phase transitions and revisit the roadmap quarterly.

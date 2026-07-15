@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://bg00ssrcp08bs"]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/GameScene.gd" id="1"]
 [ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/ComicBackdrop.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/UI/SettingsOverlay.tscn" id="4"]
+[ext_resource type="Texture2D" path="res://ui/brand_mark.svg" id="5"]
+[ext_resource type="Texture2D" path="res://ui/throw_rock.svg" id="6"]
+[ext_resource type="Texture2D" path="res://ui/throw_paper.svg" id="7"]
+[ext_resource type="Texture2D" path="res://ui/throw_scissors.svg" id="8"]
 
 [node name="GameScene" type="Control"]
 layout_mode = 3
@@ -13,12 +19,15 @@ grow_vertical = 2
 theme = ExtResource("2")
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Backdrop" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.05, 0.06, 0.09, 1)
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3")
+variant = 1
 
 [node name="MainMargin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -27,43 +36,44 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 40
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_top = 32
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 18
 
 [node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 28
+theme_override_constants/separation = 12
 
 [node name="HeaderBar" type="HBoxContainer" parent="MainMargin/MainVBox"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
 [node name="BackToLobbyButton" type="Button" parent="MainMargin/MainVBox/HeaderBar"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Back to Lobby"
+theme_type_variation = &"ghost"
+text = "< Lobby"
+
+[node name="BrandMark" type="TextureRect" parent="MainMargin/MainVBox/HeaderBar"]
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="HeaderInfo" type="VBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 0
+
+[node name="HeaderEyebrow" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "LIVE DUEL"
 
 [node name="HeaderTitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "SnarkScissors Arena"
-
-[node name="HeaderSubtitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Stay snappy, throw smarter than your rival."
-autowrap_mode = 2
+text = "SNARKSCISSORS ARENA"
 
 [node name="HeaderSpacer" type="Control" parent="MainMargin/MainVBox/HeaderBar"]
 layout_mode = 2
@@ -71,19 +81,22 @@ size_flags_horizontal = 3
 
 [node name="HeaderButtons" type="HBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
 [node name="SettingsButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
 layout_mode = 2
+theme_type_variation = &"ghost"
 text = "Settings"
 
 [node name="DisconnectButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
 layout_mode = 2
+theme_type_variation = &"danger"
 text = "Disconnect"
 
 [node name="RoundSummary" type="Panel" parent="MainMargin/MainVBox"]
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_type_variation = &"accent"
 
 [node name="SummaryMargin" type="MarginContainer" parent="MainMargin/MainVBox/RoundSummary"]
 layout_mode = 1
@@ -92,38 +105,46 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 18
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 18
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 10
 
 [node name="SummaryHBox" type="HBoxContainer" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
+theme_override_constants/separation = 18
 
 [node name="RoundInfoLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
 layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "ROUND 01 / 05"
+vertical_alignment = 1
+
+[node name="RoundRule" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
+layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = "subtitle"
-text = "Round 1 of 5"
+theme_type_variation = &"muted"
+text = "FIRST TO THREE TAKES THE MATCH"
+vertical_alignment = 1
 
 [node name="CountdownLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
+custom_minimum_size = Vector2(230, 0)
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Get ready..."
+theme_type_variation = &"title"
+text = "GET READY"
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="Arena" type="HBoxContainer" parent="MainMargin/MainVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 24
+theme_override_constants/separation = 14
 
 [node name="PlayerCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
+custom_minimum_size = Vector2(235, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_type_variation = &"soft"
 
 [node name="PlayerMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/PlayerCard"]
 layout_mode = 1
@@ -132,37 +153,53 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
 
 [node name="PlayerVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 9
+
+[node name="RoleLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "YOU // LOCAL"
+
+[node name="Portrait" type="TextureRect" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 16
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="PlayerNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
+theme_type_variation = &"title"
 text = "You"
 
 [node name="PlayerScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Wins: 0"
+theme_override_font_sizes/font_size = 24
+text = "0 WINS"
+
+[node name="PlayerDivider" type="ColorRect" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.31, 0.35, 0.34, 1)
 
 [node name="PlayerLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Last throw: —"
+theme_type_variation = &"muted"
+text = "LAST THROW // NONE"
 
 [node name="CenterStage" type="Panel" parent="MainMargin/MainVBox/Arena"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_type_variation = &"accent"
 
 [node name="CenterMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/CenterStage"]
 layout_mode = 1
@@ -171,54 +208,87 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 18
 
 [node name="CenterVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 24
+theme_override_constants/separation = 13
+
+[node name="SelectorLabel" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "THROW SELECTOR"
+horizontal_alignment = 1
 
 [node name="CountdownHeadline" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "Throw when ready"
+theme_type_variation = &"title"
+theme_override_font_sizes/font_size = 32
+text = "WAIT FOR THE SIGNAL"
 horizontal_alignment = 1
 
-[node name="ChoiceButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+[node name="CenterSpacer" type="Control" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
+size_flags_vertical = 3
+
+[node name="ChoiceButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+custom_minimum_size = Vector2(0, 112)
+layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="RockButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Rock"
-
-[node name="PaperButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Paper"
-
-[node name="ScissorsButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Scissors"
-
-[node name="ChoiceHint" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+custom_minimum_size = Vector2(150, 106)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Select your throw before the timer expires."
+theme_type_variation = &"choice"
+disabled = true
+text = "ROCK"
+icon = ExtResource("6")
+expand_icon = true
+
+[node name="PaperButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+custom_minimum_size = Vector2(150, 106)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"choice"
+disabled = true
+text = "PAPER"
+icon = ExtResource("7")
+expand_icon = true
+
+[node name="ScissorsButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+custom_minimum_size = Vector2(150, 106)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"choice"
+disabled = true
+text = "SCISSORS"
+icon = ExtResource("8")
+expand_icon = true
+
+[node name="ChoiceHint" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "Throws unlock after the countdown."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="LockStatus" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "LOCKED // WAITING FOR HOST"
 horizontal_alignment = 1
 
 [node name="OpponentCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
+custom_minimum_size = Vector2(235, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_type_variation = &"soft"
 
 [node name="OpponentMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/OpponentCard"]
 layout_mode = 1
@@ -227,39 +297,56 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
 
 [node name="OpponentVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 9
+
+[node name="RoleLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+theme_override_colors/font_color = Color(0.945, 0.357, 0.31, 1)
+text = "RIVAL // REMOTE"
+horizontal_alignment = 2
+
+[node name="Portrait" type="TextureRect" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+custom_minimum_size = Vector2(0, 132)
+layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 16
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="OpponentNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
+theme_type_variation = &"title"
 text = "Opponent"
 horizontal_alignment = 2
 
 [node name="OpponentScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Wins: 0"
+theme_override_font_sizes/font_size = 24
+text = "0 WINS"
 horizontal_alignment = 2
+
+[node name="OpponentDivider" type="ColorRect" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.31, 0.35, 0.34, 1)
 
 [node name="OpponentLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Last throw: —"
+theme_type_variation = &"muted"
+text = "LAST THROW // NONE"
 horizontal_alignment = 2
 
 [node name="ScoreBar" type="Panel" parent="MainMargin/MainVBox"]
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="ScoreMargin" type="MarginContainer" parent="MainMargin/MainVBox/ScoreBar"]
 layout_mode = 1
@@ -268,56 +355,101 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 16
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 16
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
 
 [node name="ScoreLabel" type="Label" parent="MainMargin/MainVBox/ScoreBar/ScoreMargin"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Score: You 0 — Opponent 0"
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "YOU  0    //    OPPONENT  0"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ResultsCard" type="Panel" parent="MainMargin/MainVBox"]
+[node name="ResultOverlay" type="Control" parent="."]
 visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ResultMargin" type="MarginContainer" parent="MainMargin/MainVBox/ResultsCard"]
+z_index = 50
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
 
-[node name="ResultVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
+[node name="Dimmer" type="ColorRect" parent="ResultOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.025, 0.025, 0.76)
 
-[node name="ResultLabel" type="Label" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+[node name="Center" type="CenterContainer" parent="ResultOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResultsCard" type="Panel" parent="ResultOverlay/Center"]
+custom_minimum_size = Vector2(560, 340)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "Result"
+theme_type_variation = &"accent"
+
+[node name="ResultMargin" type="MarginContainer" parent="ResultOverlay/Center/ResultsCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 26
+
+[node name="ResultVBox" type="VBoxContainer" parent="ResultOverlay/Center/ResultsCard/ResultMargin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="ResultEyebrow" type="Label" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "ROUND RESOLVED"
 horizontal_alignment = 1
 
-[node name="PlayersChoices" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+[node name="ResultLabel" type="Label" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
+size_flags_vertical = 3
+theme_type_variation = &"title"
+theme_override_font_sizes/font_size = 34
+text = "YOU WIN THE ROUND"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
-[node name="NextRoundButton" type="Button" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+[node name="Divider" type="ColorRect" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Next Round"
+color = Color(0.30, 0.35, 0.34, 1)
+
+[node name="PlayersChoices" type="VBoxContainer" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ResultHint" type="Label" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "The next round begins automatically."
+horizontal_alignment = 1
+
+[node name="NextRoundButton" type="Button" parent="ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"primary"
+text = "Next round"
+
+[node name="SettingsOverlay" parent="." instance=ExtResource("4")]

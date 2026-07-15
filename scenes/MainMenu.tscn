@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://crfya0eumism"]
+[gd_scene load_steps=9 format=3]
 
-[ext_resource type="Script" uid="uid://bp4avtkbk8lkb" path="res://scripts/MainMenu.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1"]
 [ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/ComicBackdrop.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/UI/SettingsOverlay.tscn" id="4"]
+[ext_resource type="Texture2D" path="res://ui/brand_mark.svg" id="5"]
+[ext_resource type="Texture2D" path="res://ui/throw_rock.svg" id="6"]
+[ext_resource type="Texture2D" path="res://ui/throw_paper.svg" id="7"]
+[ext_resource type="Texture2D" path="res://ui/throw_scissors.svg" id="8"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -13,335 +19,378 @@ grow_vertical = 2
 theme = ExtResource("2")
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Backdrop" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.07, 0.1, 1)
+script = ExtResource("3")
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="SafeMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_top = 48
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_bottom = 48
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 20
 
-[node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 32
-
-[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 24
-
-[node name="TitleBlock" type="VBoxContainer" parent="MainMargin/MainVBox/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
-[node name="TitleLabel" type="Label" parent="MainMargin/MainVBox/Header/TitleBlock"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "SnarkScissors"
-
-[node name="SubtitleLabel" type="Label" parent="MainMargin/MainVBox/Header/TitleBlock"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"subtitle"
-text = "Rock. Paper. Drama. Queue up for a snarky throwdown with friends or rivals."
-autowrap_mode = 2
-
-[node name="HeaderButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.35
-theme_override_constants/separation = 12
-
-[node name="SettingsButton" type="Button" parent="MainMargin/MainVBox/Header/HeaderButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Settings"
-
-[node name="Content" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 32
-
-[node name="HeroPanel" type="Panel" parent="MainMargin/MainVBox/Content"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HeroMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/HeroPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
-
-[node name="HeroVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 20
-
-[node name="HeroHeading" type="Label" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "Ready to throw down?"
-autowrap_mode = 2
-
-[node name="HeroDescription" type="Label" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Create a lobby, bring a friend, and let the snarky animations fly. Host locally now and upgrade to dedicated servers later."
-autowrap_mode = 2
-
-[node name="ActionButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
+[node name="Layout" type="VBoxContainer" parent="SafeMargin"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MultiplayerButton" type="Button" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox/ActionButtons"]
+[node name="TopBar" type="HBoxContainer" parent="SafeMargin/Layout"]
+custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Play Online"
+theme_override_constants/separation = 14
 
-[node name="LearnMoreButton" type="Button" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox/ActionButtons"]
+[node name="BrandMark" type="TextureRect" parent="SafeMargin/Layout/TopBar"]
+custom_minimum_size = Vector2(54, 54)
 layout_mode = 2
-size_flags_horizontal = 2
-disabled = true
-text = "How it works"
+texture = ExtResource("5")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="HeroSpacer" type="Control" parent="MainMargin/MainVBox/Content"]
-custom_minimum_size = Vector2(32, 0)
+[node name="BrandText" type="VBoxContainer" parent="SafeMargin/Layout/TopBar"]
 layout_mode = 2
-size_flags_horizontal = 0
+theme_override_constants/separation = 0
+
+[node name="BrandEyebrow" type="Label" parent="SafeMargin/Layout/TopBar/BrandText"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "DUEL NETWORK"
+
+[node name="BrandName" type="Label" parent="SafeMargin/Layout/TopBar/BrandText"]
+layout_mode = 2
+theme_type_variation = &"title"
+text = "SNARKSCISSORS"
+
+[node name="TopSpacer" type="Control" parent="SafeMargin/Layout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VersionLabel" type="Label" parent="SafeMargin/Layout/TopBar"]
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "MVP // DIRECT PLAY"
+vertical_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="SafeMargin/Layout/TopBar"]
+custom_minimum_size = Vector2(116, 44)
+layout_mode = 2
+theme_type_variation = &"ghost"
+text = "Settings"
+
+[node name="Body" type="HBoxContainer" parent="SafeMargin/Layout"]
+layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 40
 
-[node name="InteractionPanel" type="Panel" parent="MainMargin/MainVBox/Content"]
-custom_minimum_size = Vector2(450, 0)
+[node name="BrandStage" type="VBoxContainer" parent="SafeMargin/Layout/Body"]
+custom_minimum_size = Vector2(620, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 15
 
-[node name="InteractionMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel"]
+[node name="ModeLabel" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
+layout_mode = 2
+theme_type_variation = &"eyebrow"
+text = "PRIVATE 1V1 // BEST OF FIVE"
+
+[node name="DisplayTitle" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
+layout_mode = 2
+theme_type_variation = &"display"
+text = "PICK A FIGHT.\nOUTTHINK A FRIEND."
+
+[node name="Tagline" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_type_variation = &"subtitle"
+text = "Three throws. Ten seconds. Enough time to make one excellent mistake."
+autowrap_mode = 2
+
+[node name="ThrowStrip" type="HBoxContainer" parent="SafeMargin/Layout/Body/BrandStage"]
+custom_minimum_size = Vector2(0, 146)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="RockItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"soft"
+
+[node name="RockStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem/RockStack"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem/RockStack"]
+layout_mode = 2
+text = "ROCK // BREAKS"
+horizontal_alignment = 1
+
+[node name="PaperItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"soft"
+
+[node name="PaperStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem/PaperStack"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem/PaperStack"]
+layout_mode = 2
+text = "PAPER // COVERS"
+horizontal_alignment = 1
+
+[node name="ScissorsItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"soft"
+
+[node name="ScissorsStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem/ScissorsStack"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem/ScissorsStack"]
+layout_mode = 2
+text = "SCISSORS // CUT"
+horizontal_alignment = 1
+
+[node name="StageNote" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "HOST-AUTHORITATIVE  /  ENET  /  UP TO 2 PLAYERS"
+
+[node name="SessionPanel" type="Panel" parent="SafeMargin/Layout/Body"]
+custom_minimum_size = Vector2(470, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"accent"
+
+[node name="SessionMargin" type="MarginContainer" parent="SafeMargin/Layout/Body/SessionPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 28
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 28
-
-[node name="InteractionStack" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ConnectionPanel" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ConnectionMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 24
+theme_override_constants/margin_left = 26
 theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
+theme_override_constants/margin_right = 26
 theme_override_constants/margin_bottom = 24
 
-[node name="ConnectionVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin"]
+[node name="SessionStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
+
+[node name="ConnectionPanel" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack"]
+layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 18
+theme_override_constants/separation = 12
 
-[node name="ConnectionTitle" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
+[node name="Eyebrow" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_type_variation = &"eyebrow"
+text = "MATCH SETUP"
+
+[node name="Heading" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
+layout_mode = 2
 theme_type_variation = &"title"
-text = "Host or Join a Match"
-autowrap_mode = 2
+text = "Start a private duel"
 
-[node name="ConnectionSubtitle" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
+[node name="Help" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_type_variation = &"subtitle"
-text = "Use your public IP for remote friends or stick to LAN for quick battles."
+text = "Host this machine or enter a friend's address to join their lobby."
 autowrap_mode = 2
 
-[node name="FormGrid" type="GridContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
+[node name="Divider" type="ColorRect" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-columns = 2
+color = Color(0.28, 0.32, 0.32, 1)
 
-[node name="IPLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
+[node name="IPLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
 layout_mode = 2
-text = "IP Address"
+theme_type_variation = &"muted"
+text = "HOST ADDRESS"
 
-[node name="IPInput" type="LineEdit" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
+[node name="IPInput" type="LineEdit" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+placeholder_text = "127.0.0.1"
+clear_button_enabled = true
+
+[node name="PortRow" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PortLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/PortRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "e.g. 127.0.0.1"
+theme_type_variation = &"muted"
+text = "NETWORK PORT"
+vertical_alignment = 1
 
-[node name="PortLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
-layout_mode = 2
-text = "Port"
-
-[node name="PortInput" type="SpinBox" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
+[node name="PortInput" type="SpinBox" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/PortRow"]
+custom_minimum_size = Vector2(160, 46)
 layout_mode = 2
 min_value = 1024.0
 max_value = 65535.0
 value = 7777.0
 
-[node name="ConnectionButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
+[node name="ConnectionSpacer" type="Control" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
 layout_mode = 2
-theme_override_constants/separation = 16
+size_flags_vertical = 3
 
-[node name="HostButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/ConnectionButtons"]
+[node name="ConnectionButtons" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Host Lobby"
+theme_override_constants/separation = 12
 
-[node name="JoinButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/ConnectionButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Join Lobby"
-
-[node name="ConnectionStatusLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
+[node name="HostButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/ConnectionButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Ready to connect"
+theme_type_variation = &"primary"
+text = "Host lobby"
+
+[node name="JoinButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/ConnectionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join lobby"
+
+[node name="ConnectionStatusLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "Ready for a direct connection."
 horizontal_alignment = 1
 
-[node name="LobbyPanel" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack"]
+[node name="LobbyPanel" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack"]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 14
 
-[node name="LobbyMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
-
-[node name="LobbyVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin"]
+[node name="Eyebrow" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 18
+theme_type_variation = &"eyebrow"
+text = "PRIVATE LOBBY"
 
-[node name="LobbyTitleLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="LobbyHeader" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
+layout_mode = 2
+
+[node name="LobbyTitle" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/LobbyHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title"
-text = "Lobby"
+text = "Duel roster"
 
-[node name="LobbyStatusLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="LobbyStatusLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/LobbyHeader"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Host | Players: 1/2"
+theme_type_variation = &"eyebrow"
+text = "HOST  //  1 OF 2"
+vertical_alignment = 1
 
-[node name="PlayersFrame" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="LobbyHelp" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_type_variation = &"subtitle"
+text = "Both players must lock in before the host can start."
+autowrap_mode = 2
+
+[node name="PlayersScroll" type="ScrollContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
+layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="PlayersMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
-
-[node name="PlayersScroll" type="ScrollContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame/PlayersMargin"]
-layout_mode = 2
-
-[node name="PlayersList" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame/PlayersMargin/PlayersScroll"]
+[node name="PlayersList" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/PlayersScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 8
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
-[node name="ReadyButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
+[node name="ReadyButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/ButtonsContainer"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Ready"
+size_flags_horizontal = 3
+theme_type_variation = &"primary"
+text = "Ready up"
 
-[node name="StartButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
+[node name="StartButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/ButtonsContainer"]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 disabled = true
-text = "Start Match"
+text = "Start match"
 
-[node name="DisconnectButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
+[node name="DisconnectButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Leave Lobby"
+theme_type_variation = &"ghost"
+text = "Leave lobby"
 
-[node name="Footer" type="HBoxContainer" parent="MainMargin/MainVBox"]
+[node name="Footer" type="HBoxContainer" parent="SafeMargin/Layout"]
+custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 16
 
-[node name="BackButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Back"
-
-[node name="FooterSpacer" type="Control" parent="MainMargin/MainVBox/Footer"]
+[node name="FooterCopy" type="Label" parent="SafeMargin/Layout/Footer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"muted"
+text = "SNARKSCISSORS  /  FIRST TO THREE WINS"
+vertical_alignment = 1
 
-[node name="NextButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-visible = false
+[node name="QuitButton" type="Button" parent="SafeMargin/Layout/Footer"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Next"
+theme_type_variation = &"ghost"
+text = "Quit game"
 
-[node name="QuitButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Quit"
+[node name="SettingsOverlay" parent="." instance=ExtResource("4")]

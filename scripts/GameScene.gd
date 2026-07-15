@@ -1,487 +1,396 @@
-# GameScene.gd
-# Multiplayer arena flow for the SnarkScissors duel
 extends Control
 
-# Header & controls
-@onready var back_to_lobby_btn: Button = $MainMargin/MainVBox/HeaderBar/BackToLobbyButton
-@onready var settings_btn: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/SettingsButton
-@onready var disconnect_btn: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/DisconnectButton
-
-# Round summary
+@onready var back_to_lobby_button: Button = $MainMargin/MainVBox/HeaderBar/BackToLobbyButton
+@onready var settings_button: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/SettingsButton
+@onready var disconnect_button: Button = $MainMargin/MainVBox/HeaderBar/HeaderButtons/DisconnectButton
 @onready var round_info: Label = $MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox/RoundInfoLabel
 @onready var countdown_label: Label = $MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox/CountdownLabel
 @onready var countdown_headline: Label = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/CountdownHeadline
 @onready var choice_hint: Label = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceHint
-
-# Choice buttons
-@onready var choices_container: HBoxContainer = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons
-@onready var rock_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/RockButton
-@onready var paper_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/PaperButton
-@onready var scissors_btn: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/ScissorsButton
-
-# Player cards
+@onready var lock_status: Label = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/LockStatus
+@onready var rock_button: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/RockButton
+@onready var paper_button: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/PaperButton
+@onready var scissors_button: Button = $MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons/ScissorsButton
 @onready var player_name_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerNameLabel
 @onready var player_score_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerScoreLabel
 @onready var player_last_choice_label: Label = $MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox/PlayerLastChoice
-
 @onready var opponent_name_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentNameLabel
 @onready var opponent_score_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentScoreLabel
 @onready var opponent_last_choice_label: Label = $MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox/OpponentLastChoice
-
-# Score and results
 @onready var score_label: Label = $MainMargin/MainVBox/ScoreBar/ScoreMargin/ScoreLabel
-@onready var result_panel: Panel = $MainMargin/MainVBox/ResultsCard
-@onready var result_label: Label = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/ResultLabel
-@onready var players_choices: VBoxContainer = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/PlayersChoices
-@onready var next_round_btn: Button = $MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox/NextRoundButton
+@onready var result_overlay: Control = $ResultOverlay
+@onready var result_label: Label = $ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox/ResultLabel
+@onready var players_choices: VBoxContainer = $ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox/PlayersChoices
+@onready var result_hint: Label = $ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox/ResultHint
+@onready var next_round_button: Button = $ResultOverlay/Center/ResultsCard/ResultMargin/ResultVBox/NextRoundButton
+@onready var settings_overlay: Control = $SettingsOverlay
 
-# Game State
-var current_round: int = 1
-var max_rounds: int = 5
+const CHOICE_TIME := 10.0
+const COUNTDOWN_TIME := 3.0
+const NEXT_ROUND_DELAY := 4.0
+const MAX_ROUNDS := 5
+
+var current_round := 1
 var player_scores: Dictionary = {}
 var player_choices: Dictionary = {}
-var local_choice: String = ""
-var round_active: bool = false
-var countdown_time: float = 0.0
+var local_choice := ""
+var countdown_time := 0.0
+var game_phase := "waiting"
 var countdown_timer: Timer
 var next_round_timer: Timer
-var game_phase: String = "waiting"  # waiting, countdown, choosing, results
 
-# Constants
-const CHOICE_TIME = 10.0
-const COUNTDOWN_TIME = 3.0
-const NEXT_ROUND_DELAY = 4.0
 
-func _ready():
+func _ready() -> void:
 	NetworkManager.game_scene_ref = self
-	
 	_connect_ui_signals()
 	_connect_network_signals()
+	_create_timers()
 	_initialize_scores()
-	
-	# Create the countdown timer once
+
+	result_overlay.visible = false
+	_set_choice_buttons_enabled(false)
+	player_name_label.text = _get_player_name(NetworkManager.local_player_id)
+	player_last_choice_label.text = "LAST THROW // NONE"
+	opponent_last_choice_label.text = "LAST THROW // NONE"
+	_refresh_opponent_card()
+
+	if NetworkManager.is_host:
+		call_deferred("_begin_host_match")
+
+
+func _exit_tree() -> void:
+	if NetworkManager.game_scene_ref == self:
+		NetworkManager.game_scene_ref = null
+
+
+func _connect_ui_signals() -> void:
+	rock_button.pressed.connect(func(): _on_choice_selected("rock"))
+	paper_button.pressed.connect(func(): _on_choice_selected("paper"))
+	scissors_button.pressed.connect(func(): _on_choice_selected("scissors"))
+	next_round_button.pressed.connect(_on_next_round_pressed)
+	back_to_lobby_button.pressed.connect(_on_back_to_lobby_pressed)
+	disconnect_button.pressed.connect(_on_disconnect_pressed)
+	settings_button.pressed.connect(settings_overlay.open)
+
+
+func _connect_network_signals() -> void:
+	NetworkManager.player_connected.connect(_on_player_connected)
+	NetworkManager.player_disconnected.connect(_on_player_disconnected)
+
+
+func _create_timers() -> void:
 	countdown_timer = Timer.new()
 	countdown_timer.wait_time = 1.0
 	countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(countdown_timer)
 
-	# Create next round timer for auto-advance
 	next_round_timer = Timer.new()
 	next_round_timer.one_shot = true
 	next_round_timer.wait_time = NEXT_ROUND_DELAY
 	next_round_timer.timeout.connect(_on_next_round_timer_timeout)
 	add_child(next_round_timer)
 
-	result_panel.visible = false
-	_set_choice_buttons_enabled(false)
-	player_name_label.text = _get_player_name(NetworkManager.local_player_id)
-	player_last_choice_label.text = "Last throw: —"
-	opponent_last_choice_label.text = "Last throw: —"
-	_refresh_opponent_card()
 
-	# Only the host should kick off the opening round
-	if NetworkManager.is_host:
-		call_deferred("start_new_round")
-
-func _connect_ui_signals():
-	rock_btn.pressed.connect(func(): _on_choice_selected("rock"))
-	paper_btn.pressed.connect(func(): _on_choice_selected("paper"))
-	scissors_btn.pressed.connect(func(): _on_choice_selected("scissors"))
-	
-	next_round_btn.pressed.connect(_on_next_round_pressed)
-	back_to_lobby_btn.pressed.connect(_on_back_to_lobby_pressed)
-	disconnect_btn.pressed.connect(_on_disconnect_pressed)
-
-func _connect_network_signals():
-	NetworkManager.player_connected.connect(_on_player_connected)
-	NetworkManager.player_disconnected.connect(_on_player_disconnected)
-
-func _initialize_scores():
+func _initialize_scores() -> void:
 	player_scores[NetworkManager.local_player_id] = 0
-	
 	for player in NetworkManager.get_connected_players():
 		player_scores[player.id] = 0
-	
 	_update_score_display()
 
-# ========================================
-# GAME FLOW - HOST-DRIVEN
-# ========================================
 
-func start_new_round():
-	"""Starts a new round (host only)"""
+func _begin_host_match() -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	start_new_round()
+
+
+func start_new_round() -> void:
 	if not NetworkManager.is_host:
 		return
-
-	print("HOST: Starting round ", current_round)
-
-	# Sync round number to all clients first
 	NetworkManager.sync_round_start.rpc(current_round)
-
-	# Then start countdown
 	NetworkManager.start_countdown_for_all(COUNTDOWN_TIME)
 
-# ========================================
-# SYNCED EVENTS FOR ALL PEERS
-# ========================================
 
-func sync_start_new_round(round_number: int):
-	"""Syncs the start of a new round"""
-	print("SYNC: Beginning round ", round_number)
+func sync_start_new_round(round_number: int) -> void:
 	current_round = round_number
-	_reset_round_state()
-
-func sync_countdown_phase(countdown_time_param: float):
-	"""Syncs the countdown phase"""
-	print("SYNC: Countdown phase - ", countdown_time_param, "s")
-
-	game_phase = "countdown"
-	countdown_time = countdown_time_param
-
-	# Clear previous round state
-	local_choice = ""
 	player_choices.clear()
+	local_choice = ""
+	game_phase = "waiting"
+	result_overlay.visible = false
+	next_round_button.text = "Next round"
 
-	# Reset UI
-	result_panel.visible = false
+
+func sync_countdown_phase(duration: float) -> void:
+	game_phase = "countdown"
+	countdown_time = duration
+	player_choices.clear()
+	local_choice = ""
+	result_overlay.visible = false
 	countdown_label.visible = true
 	_set_choice_buttons_enabled(false)
-
-	# Update copy for the countdown phase
-	round_info.text = "Round " + str(current_round) + " of " + str(max_rounds)
-	countdown_label.text = "Get ready..."
-	countdown_headline.text = "Countdown"
+	round_info.text = "ROUND %02d / %02d" % [current_round, MAX_ROUNDS]
+	countdown_label.text = "GET READY"
+	countdown_headline.text = "WAIT FOR THE SIGNAL"
 	choice_hint.text = "Throws unlock once the countdown finishes."
-
-	# Start the countdown ticking
+	lock_status.text = "LOCKED // COUNTDOWN"
+	AudioManager.play_sfx(&"countdown")
 	countdown_timer.start()
 
-func sync_choice_phase(choice_time_param: float):
-	"""Syncs the choice phase"""
-	print("SYNC: Choice phase - ", choice_time_param, "s")
-	
+
+func sync_choice_phase(duration: float) -> void:
 	game_phase = "choosing"
-	countdown_time = choice_time_param
-	round_active = true
-	
-	# Update copy for the choice phase
-	countdown_label.text = "Lock in your throw!"
-	countdown_headline.text = "Your move"
+	countdown_time = duration
+	countdown_label.text = "CHOOSE NOW"
+	countdown_headline.text = "PICK YOUR THROW"
 	choice_hint.text = "Rock beats scissors. Paper beats rock. Scissors beat paper."
+	lock_status.text = "OPEN // TEN SECONDS"
 	_set_choice_buttons_enabled(true)
-	
-	# Restart the timer for the choice duration
+	AudioManager.play_sfx(&"ready")
 	countdown_timer.start()
 
-func sync_round_end(winner_id: int, results: Dictionary):
-	"""Syncs the end of the round"""
-	print("SYNC: Round finished, winner: ", winner_id)
-	
+
+func sync_round_end(winner_id: int, results: Dictionary) -> void:
 	game_phase = "results"
-	round_active = false
 	countdown_timer.stop()
-	
-	# Update score bookkeeping
 	if winner_id in player_scores:
 		player_scores[winner_id] += 1
-	
-	# Display results locally
+
 	_show_round_results(winner_id, results)
-	
-	# Check if the match is over
 	if _is_game_finished():
 		_show_game_results()
-	else:
-		if NetworkManager.is_host:
-			current_round += 1
+	elif NetworkManager.is_host:
+		current_round += 1
 
-func _reset_round_state():
-	"""Resets transient round state"""
-	player_choices.clear()
-	local_choice = ""
-	round_active = false
-	game_phase = "waiting"
 
-# ========================================
-# TIMER A COUNTDOWN
-# ========================================
-
-func _on_countdown_tick():
-	"""Handles countdown ticks on every peer"""
+func _on_countdown_tick() -> void:
 	countdown_time -= 1.0
-	
 	if game_phase == "countdown":
 		if countdown_time > 0:
-			countdown_label.text = str(int(countdown_time))
+			countdown_label.text = "%d" % int(countdown_time)
+			AudioManager.play_sfx(&"countdown")
 		else:
 			countdown_timer.stop()
-			# Host triggers choice phase for everyone
 			if NetworkManager.is_host:
 				NetworkManager.start_choice_phase_for_all(CHOICE_TIME)
-	
 	elif game_phase == "choosing":
 		if countdown_time > 0:
-			countdown_label.text = "Time left: " + str(int(countdown_time)) + "s"
+			countdown_label.text = "%d SEC" % int(countdown_time)
 		else:
 			countdown_timer.stop()
-			# Auto-pick when the player has not selected
-			if local_choice == "":
-				var choices = ["rock", "paper", "scissors"]
-				local_choice = choices[randi() % choices.size()]
-				NetworkManager.send_player_choice(local_choice)
-			
-			countdown_label.text = "Waiting for resolution..."
+			if local_choice.is_empty():
+				var choices := ["rock", "paper", "scissors"]
+				_on_choice_selected(choices[randi() % choices.size()])
+			countdown_label.text = "RESOLVING"
+			lock_status.text = "LOCKED // AUTO-PICKED"
 
-# ========================================
-# PLAYER ACTIONS
-# ========================================
 
-func _on_choice_selected(choice: String):
-	"""Handles when the local player picks a throw"""
-	if game_phase != "choosing" or local_choice != "":
+func _on_choice_selected(choice: String) -> void:
+	if game_phase != "choosing" or not local_choice.is_empty():
 		return
-	
-	print("Local player chose: ", choice)
+
 	local_choice = choice
 	player_choices[NetworkManager.local_player_id] = choice
-	player_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
-	
+	player_last_choice_label.text = "LAST THROW // " + _get_choice_display_name(choice).to_upper()
+	AudioManager.play_sfx(StringName(choice))
 	_set_choice_buttons_enabled(false)
 	NetworkManager.send_player_choice(choice)
-	countdown_label.text = "Waiting for opponents..."
-	choice_hint.text = "Hang tight while everyone locks in."
-	
-	if _all_players_chose():
-		countdown_timer.stop()
-		if NetworkManager.is_host:
-			_evaluate_round()
+	countdown_label.text = "LOCKED IN"
+	choice_hint.text = "Waiting for the rival to lock in."
+	lock_status.text = "LOCKED // CHOICE SENT"
 
-func receive_player_choice(player_id: int, choice: String):
-	"""Processes a received throw from a peer"""
-	print("Received choice from player ", player_id, ": ", choice)
-	player_choices[player_id] = choice
-	
-	if player_id == NetworkManager.local_player_id:
-		player_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
-	else:
-		opponent_last_choice_label.text = "Last throw: " + _get_choice_display_name(choice)
-	
-	# Host checks if every peer has committed
 	if NetworkManager.is_host and _all_players_chose():
 		countdown_timer.stop()
 		_evaluate_round()
 
+
+func receive_player_choice(player_id: int, choice: String) -> void:
+	if choice not in ["rock", "paper", "scissors"]:
+		return
+	player_choices[player_id] = choice
+
+	if NetworkManager.is_host and _all_players_chose():
+		countdown_timer.stop()
+		_evaluate_round()
+
+
 func _all_players_chose() -> bool:
-	"""Checks whether every active player has locked in"""
-	var expected_players = _get_active_players()
-	for player_id in expected_players:
+	for player_id in _get_active_players():
 		if player_id not in player_choices:
 			return false
 	return true
 
+
 func _get_active_players() -> Array:
-	"""Returns the peer IDs expected to submit a choice"""
-	var active_players = []
-	# Start with the local peer
-	active_players.append(NetworkManager.local_player_id)
-	# Append remote peers tracked by the NetworkManager
+	var active_players := [NetworkManager.local_player_id]
 	for peer_id in NetworkManager.connected_peers:
 		if peer_id != NetworkManager.local_player_id:
 			active_players.append(peer_id)
-	
 	return active_players
 
-func _evaluate_round():
-	"""Evaluates the round outcome (host only)"""
+
+func _evaluate_round() -> void:
 	if not NetworkManager.is_host:
 		return
-	
-	print("HOST: Evaluating round...")
-	
-	var results = _calculate_results()
-	var winner_id = results.winner_id
-	
-	# Broadcast the results to every peer
-	NetworkManager.end_round_for_all(winner_id, results)
+	var results := _calculate_results()
+	NetworkManager.end_round_for_all(results.winner_id, results)
+
 
 func _calculate_results() -> Dictionary:
-	"""Calculates the round outcome data"""
-	var results = {
+	var results := {
 		"winner_id": -1,
 		"winner_name": "Draw",
-		"choices": player_choices.duplicate()
+		"choices": player_choices.duplicate(),
 	}
-	
-	if player_choices.size() == 2:
-		var players = player_choices.keys()
-		var player1_id = players[0]
-		var player2_id = players[1]
-		var choice1 = player_choices[player1_id]
-		var choice2 = player_choices[player2_id]
-		
-		var winner = _get_rps_winner(choice1, choice2)
-		
-		if winner == 1:
-			results.winner_id = player1_id
-			results.winner_name = _get_player_name(player1_id)
-		elif winner == 2:
-			results.winner_id = player2_id
-			results.winner_name = _get_player_name(player2_id)
-	
+	if player_choices.size() != 2:
+		return results
+
+	var players := player_choices.keys()
+	var first_id = players[0]
+	var second_id = players[1]
+	var outcome := _get_rps_winner(player_choices[first_id], player_choices[second_id])
+	if outcome == 1:
+		results.winner_id = first_id
+		results.winner_name = _get_player_name(first_id)
+	elif outcome == 2:
+		results.winner_id = second_id
+		results.winner_name = _get_player_name(second_id)
 	return results
 
-func _get_rps_winner(choice1: String, choice2: String) -> int:
-	"""Resolves a simple rock-paper-scissors duel"""
-	if choice1 == choice2:
+
+func _get_rps_winner(first_choice: String, second_choice: String) -> int:
+	if first_choice == second_choice:
 		return 0
-	
-	var winning_combinations = {
+	var winning_combinations := {
 		"rock": "scissors",
-		"paper": "rock", 
-		"scissors": "paper"
+		"paper": "rock",
+		"scissors": "paper",
 	}
-	
-	if winning_combinations[choice1] == choice2:
-		return 1
-	else:
-		return 2
+	return 1 if winning_combinations[first_choice] == second_choice else 2
 
-# ========================================
-# UI HELPERS
-# ========================================
 
-func _show_round_results(winner_id: int, results: Dictionary):
-	"""Updates the round summary card with latest results"""
+func _show_round_results(winner_id: int, results: Dictionary) -> void:
 	countdown_label.visible = false
-	result_panel.visible = true
-	
+	result_overlay.visible = true
 	if winner_id == -1:
-		result_label.text = "Round tied!"
-		result_label.modulate = Color(0.94, 0.83, 0.39)
+		result_label.text = "ROUND TIED"
+		result_label.modulate = Color("f2c14e")
+		AudioManager.play_sfx(&"draw")
 	elif winner_id == NetworkManager.local_player_id:
-		result_label.text = "You win the round!"
-		result_label.modulate = Color(0.55, 0.9, 0.61)
+		result_label.text = "YOU WIN THE ROUND"
+		result_label.modulate = Color("2ebfa5")
+		AudioManager.play_sfx(&"win")
 	else:
-		result_label.text = "You lose the round!"
-		result_label.modulate = Color(0.93, 0.45, 0.45)
-	
-	_display_player_choices(results.choices)
+		result_label.text = "RIVAL TAKES THE ROUND"
+		result_label.modulate = Color("f15b4f")
+		AudioManager.play_sfx(&"lose")
+
+	var choices: Dictionary = results.get("choices", {})
+	_reveal_round_choices(choices)
+	_display_player_choices(choices)
 	_update_score_display()
-
-	# Show next round button for host, or auto-advance after delay
-	var game_finished = _is_game_finished()
-	next_round_btn.visible = NetworkManager.is_host and not game_finished
-
-	# Auto-advance to next round if not finished
+	var game_finished := _is_game_finished()
+	next_round_button.visible = NetworkManager.is_host and not game_finished
+	next_round_button.text = "Next round"
+	result_hint.text = "The next round begins automatically."
 	if NetworkManager.is_host and not game_finished:
 		next_round_timer.start()
 
-func _display_player_choices(choices: Dictionary):
-	"""Builds a quick summary of each throw"""
+
+func _reveal_round_choices(choices: Dictionary) -> void:
+	for player_id in choices:
+		var display_name := _get_choice_display_name(choices[player_id]).to_upper()
+		if player_id == NetworkManager.local_player_id:
+			player_last_choice_label.text = "LAST THROW // " + display_name
+		else:
+			opponent_last_choice_label.text = "LAST THROW // " + display_name
+
+
+func _display_player_choices(choices: Dictionary) -> void:
 	for child in players_choices.get_children():
 		child.queue_free()
-	
 	for player_id in choices:
-		var choice_item = HBoxContainer.new()
-		choice_item.alignment = BoxContainer.ALIGNMENT_BEGIN
-		choice_item.theme = theme
-		choice_item.add_theme_constant_override("separation", 12)
-		
-		var name_label = Label.new()
-		var choice_label = Label.new()
-		var icon_label = Label.new()
-		
-		name_label.text = _get_player_name(player_id) + ": "
-		choice_label.text = _get_choice_display_name(choices[player_id])
-		icon_label.text = _get_choice_icon(choices[player_id])
-		icon_label.add_theme_font_size_override("font_size", 24)
-		
-		choice_item.add_child(name_label)
-		choice_item.add_child(choice_label)
-		choice_item.add_child(icon_label)
-		
-		players_choices.add_child(choice_item)
+		var choice_label := Label.new()
+		choice_label.theme = theme
+		choice_label.theme_type_variation = &"subtitle"
+		choice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		choice_label.text = "%s  //  %s" % [
+			_get_player_name(player_id).to_upper(),
+			_get_choice_display_name(choices[player_id]).to_upper(),
+		]
+		players_choices.add_child(choice_label)
 
-func _set_choice_buttons_enabled(enabled: bool):
-	"""Toggles the throw buttons"""
-	rock_btn.disabled = not enabled
-	paper_btn.disabled = not enabled
-	scissors_btn.disabled = not enabled
 
-func _update_score_display():
-	"""Updates score ribbons and labels"""
-	var local_score = player_scores.get(NetworkManager.local_player_id, 0)
-	var opponent_id = _get_remote_player_id()
-	var score_parts: Array = []
-	
-	player_score_label.text = "Wins: " + str(local_score)
-	score_parts.append("You " + str(local_score))
-	
+func _set_choice_buttons_enabled(enabled: bool) -> void:
+	rock_button.disabled = not enabled
+	paper_button.disabled = not enabled
+	scissors_button.disabled = not enabled
+
+
+func _update_score_display() -> void:
+	var local_score: int = player_scores.get(NetworkManager.local_player_id, 0)
+	var opponent_id := _get_remote_player_id()
+	player_score_label.text = "%d WINS" % local_score
 	if opponent_id != -1:
-		var opponent_score = player_scores.get(opponent_id, 0)
-		opponent_score_label.text = "Wins: " + str(opponent_score)
-		score_parts.append("Opponent " + str(opponent_score))
+		var opponent_score: int = player_scores.get(opponent_id, 0)
+		opponent_score_label.text = "%d WINS" % opponent_score
+		score_label.text = "YOU  %d    //    OPPONENT  %d" % [local_score, opponent_score]
 	else:
-		opponent_score_label.text = "Waiting for opponent"
-	
-	score_label.text = "Score: " + " • ".join(score_parts)
+		opponent_score_label.text = "WAITING"
+		score_label.text = "YOU  %d    //    OPPONENT  --" % local_score
 	_refresh_opponent_card()
 
-func _refresh_opponent_card():
-	var opponent_id = _get_remote_player_id()
+
+func _refresh_opponent_card() -> void:
+	var opponent_id := _get_remote_player_id()
 	if opponent_id != -1:
 		var opponent_data = NetworkManager.connected_peers.get(opponent_id, null)
 		if opponent_data is Dictionary and opponent_data.has("name"):
-			opponent_name_label.text = str(opponent_data["name"])
-		else:
-			opponent_name_label.text = "Opponent"
-	else:
-		opponent_name_label.text = "Opponent"
+			opponent_name_label.text = str(opponent_data.name)
+			return
+	opponent_name_label.text = "Opponent"
+
 
 func _is_game_finished() -> bool:
-	"""Checks if a match-ending condition is met"""
 	for score in player_scores.values():
 		if score >= 3:
 			return true
-	return current_round > max_rounds
+	return current_round >= MAX_ROUNDS
 
-func _show_game_results():
-	"""Displays final game banner"""
-	var winner_id = _get_game_winner()
 
+func _show_game_results() -> void:
+	var winner_id := _get_game_winner()
 	if winner_id == -1:
-		result_label.text = "Match ends in a draw!\n\nClick 'Back to Lobby' to play again"
-		result_label.modulate = Color(0.94, 0.83, 0.39)
+		result_label.text = "MATCH DRAWN"
+		result_label.modulate = Color("f2c14e")
 	elif winner_id == NetworkManager.local_player_id:
-		result_label.text = "You take the match!\n\nClick 'Back to Lobby' to play again"
-		result_label.modulate = Color(0.55, 0.9, 0.61)
+		result_label.text = "YOU TAKE THE MATCH"
+		result_label.modulate = Color("2ebfa5")
+		AudioManager.play_sfx(&"start")
 	else:
-		result_label.text = "Defeat this time!\n\nClick 'Back to Lobby' to play again"
-		result_label.modulate = Color(0.93, 0.45, 0.45)
+		result_label.text = "MATCH LOST"
+		result_label.modulate = Color("f15b4f")
 
-	# Hide next round button and stop auto-advance timer
-	next_round_btn.visible = false
+	next_round_button.visible = true
+	next_round_button.text = "Back to lobby"
+	result_hint.text = "Return to the lobby for a rematch."
 	if next_round_timer.time_left > 0:
 		next_round_timer.stop()
 
-	# Make back to lobby button more prominent
-	back_to_lobby_btn.disabled = false
 
 func _get_game_winner() -> int:
-	"""Returns the overall match winner"""
-	var max_score = 0
-	var winner_id = -1
-	var tied = false
-	
+	var best_score := -1
+	var winner_id := -1
+	var tied := false
 	for player_id in player_scores:
-		if player_scores[player_id] > max_score:
-			max_score = player_scores[player_id]
+		var score: int = player_scores[player_id]
+		if score > best_score:
+			best_score = score
 			winner_id = player_id
 			tied = false
-		elif player_scores[player_id] == max_score:
+		elif score == best_score:
 			tied = true
-
 	return -1 if tied else winner_id
+
 
 func _get_remote_player_id() -> int:
 	for player_id in player_scores:
@@ -489,76 +398,68 @@ func _get_remote_player_id() -> int:
 			return player_id
 	return -1
 
+
 func _get_player_name(player_id: int) -> String:
-	"""Returns a display name for the given player"""
-	if player_id == NetworkManager.local_player_id:
-		return "You"
-	else:
-		return "Opponent"
+	return "You" if player_id == NetworkManager.local_player_id else "Opponent"
+
 
 func _get_choice_display_name(choice: String) -> String:
-	"""Returns a readable string for a throw"""
 	match choice:
-		"rock": return "Rock"
-		"paper": return "Paper"
-		"scissors": return "Scissors"
-		_: return "Unknown"
+		"rock":
+			return "Rock"
+		"paper":
+			return "Paper"
+		"scissors":
+			return "Scissors"
+		_:
+			return "Unknown"
 
-func _get_choice_icon(choice: String) -> String:
-	"""Returns a fun emoji for a throw"""
-	match choice:
-		"rock": return "🪨"
-		"paper": return "📄"
-		"scissors": return "✂️"
-		_: return "❓"
 
-# ========================================
-# BUTTON HANDLERS
-# ========================================
-
-func _on_next_round_pressed():
-	"""Host-only handler to kick off the next round"""
+func _on_next_round_pressed() -> void:
+	if _is_game_finished():
+		_on_back_to_lobby_pressed()
+		return
 	if NetworkManager.is_host:
-		# Stop auto-advance timer if running
 		if next_round_timer.time_left > 0:
 			next_round_timer.stop()
 		start_new_round()
 
-func _on_next_round_timer_timeout():
-	"""Auto-advance to next round after delay"""
+
+func _on_next_round_timer_timeout() -> void:
 	if NetworkManager.is_host:
 		start_new_round()
 
-func _on_back_to_lobby_pressed():
-	"""Returns to the lobby scene"""
+
+func _on_back_to_lobby_pressed() -> void:
+	AudioManager.play_sfx(&"ui")
 	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
 
-func _on_disconnect_pressed():
-	"""Disconnects from the current session"""
+
+func _on_disconnect_pressed() -> void:
+	AudioManager.play_sfx(&"disconnect")
 	NetworkManager.disconnect_from_server()
 
-# ========================================
-# NETWORK EVENT HANDLERS
-# ========================================
 
-func _on_player_connected(peer_id: int):
-	"""Refreshes HUD when a new opponent joins mid-match"""
-	print("Player connected mid-match: ", peer_id)
+func _on_player_connected(peer_id: int) -> void:
+	player_scores[peer_id] = 0
 	_update_score_display()
 
-func _on_player_disconnected(peer_id: int):
-	"""Notifies the player when an opponent leaves mid-match"""
-	print("Player disconnected mid-match: ", peer_id)
-	_update_score_display()
 
-	var notification = AcceptDialog.new()
+func _on_player_disconnected(peer_id: int) -> void:
+	player_scores.erase(peer_id)
+	_update_score_display()
+	AudioManager.play_sfx(&"disconnect")
+	var notification := AcceptDialog.new()
 	notification.dialog_text = "Your opponent disconnected. The match has ended."
 	add_child(notification)
 	notification.popup_centered()
-	notification.confirmed.connect(func(): get_tree().change_scene_to_file("res://scenes/MainMenu.tscn"))
+	notification.confirmed.connect(
+		func(): get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+	)
 
-func _notification(what):
-	"""Ensures we cleanly disconnect on window close"""
+
+func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		AudioManager.stop_all()
 		NetworkManager.disconnect_from_server()
 		get_tree().quit()

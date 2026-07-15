@@ -30,10 +30,15 @@ Currently working on MVP version with the following features.
   - Ready-up system for both players
   - Real-time player status display
 - **UI/UX**:
-  - Responsive main menu and game arena
+  - Comic-styled main menu, lobby, and fixed-layout duel arena
   - Live score tracking and round information
   - Player cards showing last throws and current scores
-  - Results display with emoji indicators (🪨📄✂️)
+  - Custom rock, paper, and scissors artwork with modal round results
+  - Persistent master, music, and effects volume controls
+  - Windowed, borderless, and fullscreen modes with five 16:9 resolutions
+- **Audio**:
+  - Looping original menu/match music on a dedicated Music bus
+  - Event-driven menu, lobby, countdown, throw, result, and disconnect effects
 - **Network Architecture**:
   - Host-authoritative game state
   - RPC-based synchronization for all game phases
@@ -85,6 +90,13 @@ godot4 --path . --run
 
 # Run headless (for testing)
 godot4 --headless --path . --run
+
+# Validate UI scenes, settings, audio buses, and RPS rules
+godot4 --headless --path . --scene res://tests/UISmoke.tscn
+
+# In two terminals, validate localhost ENet ready/choice delivery
+SNARK_NET_ROLE=host godot4 --headless --path . --scene res://tests/NetworkSmoke.tscn
+SNARK_NET_ROLE=client godot4 --headless --path . --scene res://tests/NetworkSmoke.tscn
 ```
 
 ## Quick Start - Playing Locally
@@ -98,14 +110,12 @@ To test multiplayer on your local machine:
    ```
 
 2. **Instance 1 (Host)**:
-   - Click "Play Online"
    - Click "Host Lobby"
    - Click "Ready Up"
    - Wait for player 2 to join
    - Click "Start Match" when both players are ready
 
 3. **Instance 2 (Client)**:
-   - Click "Play Online"
    - Enter IP: `127.0.0.1` (localhost)
    - Click "Join Lobby"
    - Click "Ready Up"
@@ -122,6 +132,9 @@ To test multiplayer on your local machine:
 ├── scenes/          # Game scenes (.tscn files)
 ├── scripts/         # GDScript files (.gd)
 ├── ui/              # UI assets and resources
+├── audio/           # Music tracks
+├── sfx/             # Interface and gameplay effects
+├── tests/           # Headless UI and ENet smoke checks
 ├── docs/            # Design documents and roadmaps
 └── project.godot    # Godot project configuration
 ```
