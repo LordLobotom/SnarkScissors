@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cikj0ggici8eq"
-path="res://.godot/imported/brand_mark.svg-838fc2a99ae48aeec3dcfb04f12c7439.ctex"
+uid="uid://dhtk5025lvwur"
+path="res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/brand_mark.svg"
-dest_files=["res://.godot/imported/brand_mark.svg-838fc2a99ae48aeec3dcfb04f12c7439.ctex"]
+source_file="res://ui/slider_grabber.svg"
+dest_files=["res://.godot/imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex"]
 
 [params]
 

@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/SettingsOverlay.gd" id="1"]
-[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/SettingsOverlay.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
 
 [node name="SettingsOverlay" type="Control"]
-process_mode = 3
+visible = false
 z_index = 100
 layout_mode = 3
 anchors_preset = 15
@@ -12,8 +12,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2")
-script = ExtResource("1")
+mouse_filter = 0
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
 
 [node name="Dimmer" type="ColorRect" parent="."]
 layout_mode = 1
@@ -22,225 +23,172 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.025, 0.025, 0.82)
-mouse_filter = 0
+mouse_filter = 1
+color = Color(0.025, 0.03, 0.09, 0.86)
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="SafeMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
 
-[node name="SettingsCard" type="Panel" parent="Center"]
-custom_minimum_size = Vector2(780, 600)
+[node name="Center" type="CenterContainer" parent="SafeMargin"]
 layout_mode = 2
-theme_type_variation = &"accent"
 
-[node name="CardMargin" type="MarginContainer" parent="Center/SettingsCard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 24
-
-[node name="Content" type="VBoxContainer" parent="Center/SettingsCard/CardMargin"]
+[node name="SettingsCard" type="PanelContainer" parent="SafeMargin/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(480, 0)
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_type_variation = &"surface_container"
 
-[node name="Header" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content"]
+[node name="CardMargin" type="MarginContainer" parent="SafeMargin/Center/SettingsCard"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
 
-[node name="TitleBlock" type="VBoxContainer" parent="Center/SettingsCard/CardMargin/Content/Header"]
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+
+[node name="Title" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
-
-[node name="Eyebrow" type="Label" parent="Center/SettingsCard/CardMargin/Content/Header/TitleBlock"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "SYSTEM"
-
-[node name="Title" type="Label" parent="Center/SettingsCard/CardMargin/Content/Header/TitleBlock"]
-layout_mode = 2
 theme_type_variation = &"title"
 text = "Settings"
+vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="Center/SettingsCard/CardMargin/Content/Header"]
-custom_minimum_size = Vector2(44, 44)
+[node name="CloseButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 42)
 layout_mode = 2
-theme_type_variation = &"ghost"
+text = "×"
 tooltip_text = "Close settings"
-text = "X"
 
-[node name="AudioPanel" type="Panel" parent="Center/SettingsCard/CardMargin/Content"]
+[node name="Hint" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_type_variation = &"soft"
+theme_type_variation = &"muted"
+text = "Tune the game to your liking."
 
-[node name="AudioMargin" type="MarginContainer" parent="Center/SettingsCard/CardMargin/Content/AudioPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
-
-[node name="AudioStack" type="VBoxContainer" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin"]
+[node name="Divider" type="ColorRect" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-theme_override_constants/separation = 12
+mouse_filter = 2
+color = Color(0.25, 0.30, 0.52, 0.8)
 
-[node name="AudioTitle" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "AUDIO"
-
-[node name="MasterRow" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="MasterLabel" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MasterRow"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Master"
-
-[node name="MasterSlider" type="HSlider" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MasterRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-value = 80.0
-
-[node name="MasterValue" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MasterRow"]
-custom_minimum_size = Vector2(52, 0)
-layout_mode = 2
-text = "80%"
-horizontal_alignment = 2
-
-[node name="MusicRow" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="MusicLabel" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MusicRow"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Music"
-
-[node name="MusicSlider" type="HSlider" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MusicRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-value = 55.0
-
-[node name="MusicValue" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/MusicRow"]
-custom_minimum_size = Vector2(52, 0)
-layout_mode = 2
-text = "55%"
-horizontal_alignment = 2
-
-[node name="SFXRow" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="SFXLabel" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/SFXRow"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Effects"
-
-[node name="SFXSlider" type="HSlider" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/SFXRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-value = 85.0
-
-[node name="SFXValue" type="Label" parent="Center/SettingsCard/CardMargin/Content/AudioPanel/AudioMargin/AudioStack/SFXRow"]
-custom_minimum_size = Vector2(52, 0)
-layout_mode = 2
-text = "85%"
-horizontal_alignment = 2
-
-[node name="DisplayPanel" type="Panel" parent="Center/SettingsCard/CardMargin/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_type_variation = &"soft"
-
-[node name="DisplayMargin" type="MarginContainer" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
-
-[node name="DisplayStack" type="VBoxContainer" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin"]
+[node name="MasterRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DisplayTitle" type="Label" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack"]
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+custom_minimum_size = Vector2(82, 0)
 layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "DISPLAY"
+text = "Master"
+vertical_alignment = 1
 
-[node name="ModeRow" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="ModeLabel" type="Label" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack/ModeRow"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "Window mode"
-
-[node name="ModeOption" type="OptionButton" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack/ModeRow"]
+[node name="MasterSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
 layout_mode = 2
 size_flags_horizontal = 3
+max_value = 100.0
+value = 85.0
 
-[node name="ResolutionRow" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="ResolutionLabel" type="Label" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack/ResolutionRow"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-text = "Resolution"
-
-[node name="ResolutionOption" type="OptionButton" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack/ResolutionRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ResolutionNote" type="Label" parent="Center/SettingsCard/CardMargin/Content/DisplayPanel/DisplayMargin/DisplayStack"]
+[node name="MasterValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_type_variation = &"muted"
-text = "Changes apply immediately and are saved locally."
+text = "85%"
+horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="Footer" type="HBoxContainer" parent="Center/SettingsCard/CardMargin/Content"]
+[node name="MusicRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
-[node name="ResetButton" type="Button" parent="Center/SettingsCard/CardMargin/Content/Footer"]
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+custom_minimum_size = Vector2(82, 0)
 layout_mode = 2
-theme_type_variation = &"ghost"
-text = "Reset defaults"
+text = "Music"
+vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="Center/SettingsCard/CardMargin/Content/Footer"]
+[node name="MusicSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 45.0
+
+[node name="MusicValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "45%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SFXRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+custom_minimum_size = Vector2(82, 0)
+layout_mode = 2
+text = "Effects"
+vertical_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 90.0
+
+[node name="SFXValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "90%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResetButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 46)
+layout_mode = 2
+text = "Reset"
+
+[node name="Spacer" type="Control" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CancelButton" type="Button" parent="Center/SettingsCard/CardMargin/Content/Footer"]
+[node name="DoneButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 46)
 layout_mode = 2
-text = "Cancel"
-
-[node name="ApplyButton" type="Button" parent="Center/SettingsCard/CardMargin/Content/Footer"]
-layout_mode = 2
-theme_type_variation = &"primary"
-text = "Apply settings"
+theme_type_variation = &"main_action"
+text = "Done"

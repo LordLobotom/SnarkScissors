@@ -1,0 +1,25 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/AudioManager.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://audio/music/Fantasy Snark.wav" id="2_music"]
+[ext_resource type="AudioStream" path="res://sfx/menu_select_00.wav" id="3_ui"]
+[ext_resource type="AudioStream" path="res://sfx/big_punch.wav" id="4_rock"]
+[ext_resource type="AudioStream" path="res://sfx/turn_page.wav" id="5_paper"]
+[ext_resource type="AudioStream" path="res://sfx/swish_sword_2.wav" id="6_scissors"]
+[ext_resource type="AudioStream" path="res://sfx/bubble3.wav" id="7_reveal"]
+[ext_resource type="AudioStream" path="res://sfx/level_up.wav" id="8_win"]
+[ext_resource type="AudioStream" path="res://sfx/blub_hurt2.wav" id="9_lose"]
+[ext_resource type="AudioStream" path="res://sfx/metal_clash.wav" id="10_draw"]
+
+[node name="AudioManager" type="Node"]
+process_mode = 3
+script = ExtResource("1_script")
+music_stream = ExtResource("2_music")
+ui_sfx = ExtResource("3_ui")
+rock_sfx = ExtResource("4_rock")
+paper_sfx = ExtResource("5_paper")
+scissors_sfx = ExtResource("6_scissors")
+reveal_sfx = ExtResource("7_reveal")
+win_sfx = ExtResource("8_win")
+lose_sfx = ExtResource("9_lose")
+draw_sfx = ExtResource("10_draw")

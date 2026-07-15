@@ -17,19 +17,18 @@ config/icon="res://ui/app_icon.svg"
 
 [autoload]
 
+AudioManager="*res://scenes/AudioManager.tscn"
 SettingsManager="*res://scripts/SettingsManager.gd"
-AudioManager="*res://scripts/AudioManager.gd"
-NetworkManager="*res://scripts/NetworkManager.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=390
+window/size/viewport_height=390
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/size/resizable=true
-window/stretch/mode="viewport"
-window/stretch/aspect="keep"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 

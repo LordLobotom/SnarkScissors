@@ -1,396 +1,109 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://0vqg0fygiiny"]
 
-[ext_resource type="Script" path="res://scripts/MainMenu.gd" id="1"]
-[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
-[ext_resource type="Script" path="res://scripts/ComicBackdrop.gd" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/UI/SettingsOverlay.tscn" id="4"]
-[ext_resource type="Texture2D" path="res://ui/brand_mark.svg" id="5"]
-[ext_resource type="Texture2D" path="res://ui/throw_rock.svg" id="6"]
-[ext_resource type="Texture2D" path="res://ui/throw_paper.svg" id="7"]
-[ext_resource type="Texture2D" path="res://ui/throw_scissors.svg" id="8"]
+[ext_resource type="Script" uid="uid://bp4avtkbk8lkb" path="res://scripts/MainMenu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://scripts/Backdrop.gd" id="3_backdrop"]
+[ext_resource type="PackedScene" path="res://scenes/UI/SettingsOverlay.tscn" id="4_settings"]
+[ext_resource type="Texture2D" uid="uid://bm5mugo5e78ng" path="res://ui/throw_scissors.svg" id="5_icon"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=549514615]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2")
-script = ExtResource("1")
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
 
-[node name="Backdrop" type="Control" parent="."]
+[node name="Backdrop" type="Control" parent="." unique_id=378563672]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("3")
+script = ExtResource("3_backdrop")
 
-[node name="SafeMargin" type="MarginContainer" parent="."]
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=1745368007]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="Layout" type="VBoxContainer" parent="SafeMargin"]
+[node name="Center" type="CenterContainer" parent="SafeMargin" unique_id=1314475071]
 layout_mode = 2
-theme_override_constants/separation = 16
 
-[node name="TopBar" type="HBoxContainer" parent="SafeMargin/Layout"]
-custom_minimum_size = Vector2(0, 58)
+[node name="MenuCard" type="PanelContainer" parent="SafeMargin/Center" unique_id=1274518317]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_type_variation = &"surface_container"
 
-[node name="BrandMark" type="TextureRect" parent="SafeMargin/Layout/TopBar"]
-custom_minimum_size = Vector2(54, 54)
+[node name="CardMargin" type="MarginContainer" parent="SafeMargin/Center/MenuCard" unique_id=757470981]
+unique_name_in_owner = true
 layout_mode = 2
-texture = ExtResource("5")
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Menu" type="VBoxContainer" parent="SafeMargin/Center/MenuCard/CardMargin" unique_id=1189691995]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BrandIcon" type="TextureRect" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=779033175]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("5_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="BrandText" type="VBoxContainer" parent="SafeMargin/Layout/TopBar"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="BrandEyebrow" type="Label" parent="SafeMargin/Layout/TopBar/BrandText"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "DUEL NETWORK"
-
-[node name="BrandName" type="Label" parent="SafeMargin/Layout/TopBar/BrandText"]
-layout_mode = 2
-theme_type_variation = &"title"
-text = "SNARKSCISSORS"
-
-[node name="TopSpacer" type="Control" parent="SafeMargin/Layout/TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="VersionLabel" type="Label" parent="SafeMargin/Layout/TopBar"]
-layout_mode = 2
-theme_type_variation = &"muted"
-text = "MVP // DIRECT PLAY"
-vertical_alignment = 1
-
-[node name="SettingsButton" type="Button" parent="SafeMargin/Layout/TopBar"]
-custom_minimum_size = Vector2(116, 44)
-layout_mode = 2
-theme_type_variation = &"ghost"
-text = "Settings"
-
-[node name="Body" type="HBoxContainer" parent="SafeMargin/Layout"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 40
-
-[node name="BrandStage" type="VBoxContainer" parent="SafeMargin/Layout/Body"]
-custom_minimum_size = Vector2(620, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 15
-
-[node name="ModeLabel" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "PRIVATE 1V1 // BEST OF FIVE"
-
-[node name="DisplayTitle" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
+[node name="TitleLabel" type="Label" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=1670556646]
+unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"display"
-text = "PICK A FIGHT.\nOUTTHINK A FRIEND."
+text = "SNARK SCISSORS"
+horizontal_alignment = 1
 
-[node name="Tagline" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
-custom_minimum_size = Vector2(0, 44)
+[node name="Subtitle" type="Label" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=1477562662]
 layout_mode = 2
 theme_type_variation = &"subtitle"
-text = "Three throws. Ten seconds. Enough time to make one excellent mistake."
-autowrap_mode = 2
-
-[node name="ThrowStrip" type="HBoxContainer" parent="SafeMargin/Layout/Body/BrandStage"]
-custom_minimum_size = Vector2(0, 146)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 12
-
-[node name="RockItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"soft"
-
-[node name="RockStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 10.0
-offset_right = -12.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem/RockStack"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("6")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/RockItem/RockStack"]
-layout_mode = 2
-text = "ROCK // BREAKS"
+text = "Rock  •  Paper  •  Scissors"
 horizontal_alignment = 1
 
-[node name="PaperItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
+[node name="PlayButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=106309443]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"soft"
+theme_type_variation = &"main_action"
+text = "Play"
 
-[node name="PaperStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem"]
+[node name="SettingsButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=607384961]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=516219477]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_type_variation = &"danger_action"
+text = "Quit"
+
+[node name="SettingsOverlay" parent="." unique_id=1326634722 instance=ExtResource("4_settings")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 10.0
-offset_right = -12.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem/PaperStack"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("7")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/PaperItem/PaperStack"]
-layout_mode = 2
-text = "PAPER // COVERS"
-horizontal_alignment = 1
-
-[node name="ScissorsItem" type="Panel" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"soft"
-
-[node name="ScissorsStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 10.0
-offset_right = -12.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem/ScissorsStack"]
-layout_mode = 2
-size_flags_vertical = 3
-texture = ExtResource("8")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="SafeMargin/Layout/Body/BrandStage/ThrowStrip/ScissorsItem/ScissorsStack"]
-layout_mode = 2
-text = "SCISSORS // CUT"
-horizontal_alignment = 1
-
-[node name="StageNote" type="Label" parent="SafeMargin/Layout/Body/BrandStage"]
-layout_mode = 2
-theme_type_variation = &"muted"
-text = "HOST-AUTHORITATIVE  /  ENET  /  UP TO 2 PLAYERS"
-
-[node name="SessionPanel" type="Panel" parent="SafeMargin/Layout/Body"]
-custom_minimum_size = Vector2(470, 0)
-layout_mode = 2
-size_flags_vertical = 3
-theme_type_variation = &"accent"
-
-[node name="SessionMargin" type="MarginContainer" parent="SafeMargin/Layout/Body/SessionPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 26
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 26
-theme_override_constants/margin_bottom = 24
-
-[node name="SessionStack" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin"]
-layout_mode = 2
-
-[node name="ConnectionPanel" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 12
-
-[node name="Eyebrow" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "MATCH SETUP"
-
-[node name="Heading" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_type_variation = &"title"
-text = "Start a private duel"
-
-[node name="Help" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_type_variation = &"subtitle"
-text = "Host this machine or enter a friend's address to join their lobby."
-autowrap_mode = 2
-
-[node name="Divider" type="ColorRect" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-custom_minimum_size = Vector2(0, 1)
-layout_mode = 2
-color = Color(0.28, 0.32, 0.32, 1)
-
-[node name="IPLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_type_variation = &"muted"
-text = "HOST ADDRESS"
-
-[node name="IPInput" type="LineEdit" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-custom_minimum_size = Vector2(0, 46)
-layout_mode = 2
-placeholder_text = "127.0.0.1"
-clear_button_enabled = true
-
-[node name="PortRow" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_override_constants/separation = 14
-
-[node name="PortLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/PortRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"muted"
-text = "NETWORK PORT"
-vertical_alignment = 1
-
-[node name="PortInput" type="SpinBox" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/PortRow"]
-custom_minimum_size = Vector2(160, 46)
-layout_mode = 2
-min_value = 1024.0
-max_value = 65535.0
-value = 7777.0
-
-[node name="ConnectionSpacer" type="Control" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ConnectionButtons" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="HostButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/ConnectionButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"primary"
-text = "Host lobby"
-
-[node name="JoinButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel/ConnectionButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Join lobby"
-
-[node name="ConnectionStatusLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/ConnectionPanel"]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-theme_type_variation = &"muted"
-text = "Ready for a direct connection."
-horizontal_alignment = 1
-
-[node name="LobbyPanel" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack"]
-visible = false
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 14
-
-[node name="Eyebrow" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "PRIVATE LOBBY"
-
-[node name="LobbyHeader" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-
-[node name="LobbyTitle" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/LobbyHeader"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "Duel roster"
-
-[node name="LobbyStatusLabel" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/LobbyHeader"]
-layout_mode = 2
-theme_type_variation = &"eyebrow"
-text = "HOST  //  1 OF 2"
-vertical_alignment = 1
-
-[node name="LobbyHelp" type="Label" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-theme_type_variation = &"subtitle"
-text = "Both players must lock in before the host can start."
-autowrap_mode = 2
-
-[node name="PlayersScroll" type="ScrollContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="PlayersList" type="VBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/PlayersScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ButtonsContainer" type="HBoxContainer" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="ReadyButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/ButtonsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"primary"
-text = "Ready up"
-
-[node name="StartButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel/ButtonsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-disabled = true
-text = "Start match"
-
-[node name="DisconnectButton" type="Button" parent="SafeMargin/Layout/Body/SessionPanel/SessionMargin/SessionStack/LobbyPanel"]
-layout_mode = 2
-theme_type_variation = &"ghost"
-text = "Leave lobby"
-
-[node name="Footer" type="HBoxContainer" parent="SafeMargin/Layout"]
-custom_minimum_size = Vector2(0, 34)
-layout_mode = 2
-
-[node name="FooterCopy" type="Label" parent="SafeMargin/Layout/Footer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"muted"
-text = "SNARKSCISSORS  /  FIRST TO THREE WINS"
-vertical_alignment = 1
-
-[node name="QuitButton" type="Button" parent="SafeMargin/Layout/Footer"]
-layout_mode = 2
-theme_type_variation = &"ghost"
-text = "Quit game"
-
-[node name="SettingsOverlay" parent="." instance=ExtResource("4")]
+offset_left = 3.0
+offset_top = -20.0
+offset_right = 3.0
+offset_bottom = -20.0
