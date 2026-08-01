@@ -1,32 +1,50 @@
 # Repository Guidelines
 
+## Product Contract
+
+- The active product is a small single-player Rock-Paper-Scissors MVP against the computer.
+- Keep the main menu limited to `Play`, `Settings`, and `Quit`.
+- Keep settings in the main menu; the game screen exposes only `Menu` navigation.
+- In phone portrait, place the computer above the player and keep throw buttons at the bottom.
+- Networking, lobbies, RPCs, and multiplayer tests are not current runtime dependencies.
+
 ## Quick Start
-- Open the project with `godot4 --path .`. If the main scene is unset, point `Project Settings > Application > Run > Main Scene` to `res://scenes/MainMenu.tscn` so `godot4 --path . --run` works reliably.
-- For batch checks or CI, prefer `godot4 --headless --path . --run`.
-- Export desktop builds with `godot4 --headless --path . --export-release "Linux/X11" build/snarkscissors.x86_64`; ensure presets live in `export_presets.cfg`.
 
-## Project Structure & Docs
-- Scenes live under `scenes/`; ensure each `.tscn` has a matching script in `scripts/` (e.g. `scenes/GameScene.tscn` ↔ `scripts/GameScene.gd`) per [Godot scene/script pairing](https://docs.godotengine.org/en/stable/tutorials/best_practices/node_tree_best_practices.html).
-- UI fragments belong in `scenes/UI/` so they can be instanced across menus.
-- Design and technical references reside in `docs/`: review `snarkscissors_gdd.md`, `snarkscissors_tech_study.md`, and `snarkscissors_project_roadmap.md` before altering gameplay, networking, or delivery scope.
-- Shared art stays at the root (`icon.svg`). Mirror that structure for any new assets to avoid import path churn.
+- Open or run the project with `godot4 --path .`.
+- Run all automated checks with
+  `powershell -ExecutionPolicy Bypass -File .agents/skills/snark-godot-qa/scripts/run-tests.ps1`.
+- Export Windows with
+  `godot4 --headless --path . --export-release "Windows Desktop" ../snarkscissors_export/snarkscissors.exe`.
+- Keep `res://scenes/MainMenu.tscn` as the main scene.
 
-## Scene & Script Guidelines
-- Follow the official [GDScript style guide](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html): 4-space indentation, snake_case for variables and signals (`round_completed`), PascalCase for classes, and explicit types on exported and public members.
-- Use `@onready var` for cached node references instead of repeated `get_node` calls. Prefer [node grouping and signals](https://docs.godotengine.org/en/stable/tutorials/best_practices/index.html) over tightly coupled lookups.
-- Keep scenes focused: one root node per major responsibility, child nodes named descriptively (no default `Node2D`, `Control`). Clean up temporary nodes with `queue_free()` to prevent leaks.
-- When adding multiplayer code, isolate RPCs in the relevant script (e.g. `NetworkManager.gd`), annotate with `@rpc` access policy, and validate remote data server-side where feasible.
+## Project Structure
 
-## Resource & UID Management
-- Keep `.tscn` and `.tres` files committed so resource UIDs resolve consistently. After renaming scenes, verify the UID cache updates before pushing.
-- References in `project.godot` should use `res://` paths when possible to avoid UID drift, especially for the main scene and autoloads.
+- Major scenes live in `scenes/` and reusable fragments in `scenes/UI/`.
+- Pair major scenes with scripts under `scripts/`, for example
+  `scenes/GameScene.tscn` and `scripts/GameScene.gd`.
+- Shared visual resources live in `ui/`, music in `audio/`, and used effects in `sfx/`.
+- Keep automated smoke scenes and scripts under `tests/`.
+- Treat `docs/snarkscissors_project_roadmap.md` as the current delivery scope. Broader design
+  documents are concept references only.
 
-## Testing & QA
-- Aim for deterministic gameplay logic to support automated tests. Add future unit or integration coverage under `tests/` using GUT or Godot’s native runner (headless command shown above).
-- For new features, capture short clips of `GameScene.tscn` interactions to document expected behaviour until automated regression tests exist.
-- Run smoke tests in headless mode before merging multiplayer changes to ensure RPC paths stay valid.
+## Code and Resource Guidelines
 
-## Process & Collaboration
-- Commits stay short and imperative (e.g. `Tweak round flow`). PR descriptions must state scope, evidence (commands run, screenshots, clips), and related docs/roadmap items. Flag networking changes that touch `scripts/NetworkManager.gd` or multiplayer flow.
-- Align planning with `docs/snarkscissors_project_roadmap.md`: stabilise the player-hosted MVP first, then harden netcode, and plan for the dedicated server milestone.
-- Reference Godot’s stable documentation for engine features, editor workflows, and best practices; link relevant sections in code comments only when behaviour deviates from defaults.
+- Follow the official GDScript style guide: four-space indentation, snake_case names,
+  PascalCase classes, and explicit types on public or exported members.
+- Cache scene nodes with `@onready var`, communicate with signals where useful, and free
+  temporary nodes when their work is complete.
+- Keep `.tscn`, `.tres`, `.gd.uid`, source assets, import metadata, and required licenses in Git.
+- Use `res://` paths for project resources and update scene/script references together.
+- Preserve the `Master`, `Music`, and `SFX` audio bus contract and persist settings through
+  `SettingsManager`.
+
+## Testing and Delivery
+
+- Keep RPS outcome logic deterministic and cover all nine choice combinations.
+- Validate menu actions, settings pause/resume, audio playback, reveal input locking, scoring,
+  and neutral choice focus in smoke tests.
+- For layout changes, inspect at least 390x844 portrait and 1024x576 desktop; also check
+  844x390 and 2560x1440 for broader responsive changes.
+- Run `$snark-godot-qa` after implementation and before committing, pushing, or exporting.
+- Use short imperative commit subjects and include scope, user impact, and validation evidence
+  in pull-request descriptions.

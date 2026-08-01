@@ -1,0 +1,4 @@
+interface:
+  display_name: "Snark Godot QA"
+  short_description: "Run deterministic UI, gameplay, and audio checks"
+  default_prompt: "Use $snark-godot-qa to validate this SnarkScissors change."

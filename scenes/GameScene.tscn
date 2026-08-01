@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bg00ssrcp08bs"]
+[gd_scene load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://scripts/GameScene.gd" id="1"]
-[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/GameScene.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://scripts/Backdrop.gd" id="3_backdrop"]
+[ext_resource type="Texture2D" path="res://ui/throw_rock.svg" id="5_rock"]
+[ext_resource type="Texture2D" path="res://ui/throw_paper.svg" id="6_paper"]
+[ext_resource type="Texture2D" path="res://ui/throw_scissors.svg" id="7_scissors"]
 
 [node name="GameScene" type="Control"]
 layout_mode = 3
@@ -10,314 +14,431 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2")
-script = ExtResource("1")
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0.05, 0.06, 0.09, 1)
-
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="Backdrop" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 40
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_top = 32
+script = ExtResource("3_backdrop")
+accent_left = Color(0.18, 0.74, 0.67, 0.18)
+accent_right = Color(0.92, 0.28, 0.43, 0.18)
 
-[node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 28
-
-[node name="HeaderBar" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 16
-
-[node name="BackToLobbyButton" type="Button" parent="MainMargin/MainVBox/HeaderBar"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Back to Lobby"
-
-[node name="HeaderInfo" type="VBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
-[node name="HeaderTitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "SnarkScissors Arena"
-
-[node name="HeaderSubtitle" type="Label" parent="MainMargin/MainVBox/HeaderBar/HeaderInfo"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Stay snappy, throw smarter than your rival."
-autowrap_mode = 2
-
-[node name="HeaderSpacer" type="Control" parent="MainMargin/MainVBox/HeaderBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HeaderButtons" type="HBoxContainer" parent="MainMargin/MainVBox/HeaderBar"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="SettingsButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
-layout_mode = 2
-text = "Settings"
-
-[node name="DisconnectButton" type="Button" parent="MainMargin/MainVBox/HeaderBar/HeaderButtons"]
-layout_mode = 2
-text = "Disconnect"
-
-[node name="RoundSummary" type="Panel" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SummaryMargin" type="MarginContainer" parent="MainMargin/MainVBox/RoundSummary"]
+[node name="SafeMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 18
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 18
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
 
-[node name="SummaryHBox" type="HBoxContainer" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin"]
+[node name="Layout" type="VBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Layout"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MenuButton" type="Button" parent="SafeMargin/Layout/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 42)
+layout_mode = 2
+text = "Menu"
+
+[node name="Title" type="Label" parent="SafeMargin/Layout/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 20
-
-[node name="RoundInfoLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "subtitle"
-text = "Round 1 of 5"
-
-[node name="CountdownLabel" type="Label" parent="MainMargin/MainVBox/RoundSummary/SummaryMargin/SummaryHBox"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Get ready..."
-horizontal_alignment = 2
-
-[node name="Arena" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 24
-
-[node name="PlayerCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="PlayerMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/PlayerCard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
-
-[node name="PlayerVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 16
-
-[node name="PlayerNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "You"
-
-[node name="PlayerScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Wins: 0"
-
-[node name="PlayerLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/PlayerCard/PlayerMargin/PlayerVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Last throw: —"
-
-[node name="CenterStage" type="Panel" parent="MainMargin/MainVBox/Arena"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-
-[node name="CenterMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/CenterStage"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
-
-[node name="CenterVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 24
-
-[node name="CountdownHeadline" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "Throw when ready"
+theme_type_variation = &"title"
+theme_override_font_sizes/font_size = 24
+text = "Quick Match"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ChoiceButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
+[node name="HeaderBalance" type="Control" parent="SafeMargin/Layout/Header"]
+custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
 
-[node name="RockButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
+[node name="ScorePanel" type="Panel" parent="SafeMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Rock"
+theme_type_variation = &"score_panel"
 
-[node name="PaperButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Paper"
-
-[node name="ScissorsButton" type="Button" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox/ChoiceButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Scissors"
-
-[node name="ChoiceHint" type="Label" parent="MainMargin/MainVBox/Arena/CenterStage/CenterMargin/CenterVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Select your throw before the timer expires."
-horizontal_alignment = 1
-
-[node name="OpponentCard" type="Panel" parent="MainMargin/MainVBox/Arena"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="OpponentMargin" type="MarginContainer" parent="MainMargin/MainVBox/Arena/OpponentCard"]
+[node name="ScoreMargin" type="MarginContainer" parent="SafeMargin/Layout/ScorePanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 4
 
-[node name="OpponentVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin"]
+[node name="ScoreRow" type="HBoxContainer" parent="SafeMargin/Layout/ScorePanel/ScoreMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 16
 
-[node name="OpponentNameLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "Opponent"
-horizontal_alignment = 2
-
-[node name="OpponentScoreLabel" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Wins: 0"
-horizontal_alignment = 2
-
-[node name="OpponentLastChoice" type="Label" parent="MainMargin/MainVBox/Arena/OpponentCard/OpponentMargin/OpponentVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Last throw: —"
-horizontal_alignment = 2
-
-[node name="ScoreBar" type="Panel" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ScoreMargin" type="MarginContainer" parent="MainMargin/MainVBox/ScoreBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_bottom = 16
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 16
-
-[node name="ScoreLabel" type="Label" parent="MainMargin/MainVBox/ScoreBar/ScoreMargin"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Score: You 0 — Opponent 0"
-horizontal_alignment = 1
-
-[node name="ResultsCard" type="Panel" parent="MainMargin/MainVBox"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="ResultMargin" type="MarginContainer" parent="MainMargin/MainVBox/ResultsCard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_bottom = 24
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_top = 24
-
-[node name="ResultVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
-
-[node name="ResultLabel" type="Label" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = "title"
-text = "Result"
-horizontal_alignment = 1
-
-[node name="PlayersChoices" type="VBoxContainer" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+[node name="PlayerBlock" type="HBoxContainer" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="NextRoundButton" type="Button" parent="MainMargin/MainVBox/ResultsCard/ResultMargin/ResultVBox"]
+[node name="PlayerLabel" type="Label" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow/PlayerBlock"]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Next Round"
+theme_type_variation = &"player_text"
+text = "YOU"
+vertical_alignment = 1
+
+[node name="PlayerScoreLabel" type="Label" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow/PlayerBlock"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"score_value"
+theme_override_font_sizes/font_size = 28
+text = "0"
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(92, 0)
+layout_mode = 2
+theme_type_variation = &"title"
+text = "0  :  0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ComputerBlock" type="HBoxContainer" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="ComputerScoreLabel" type="Label" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow/ComputerBlock"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"score_value"
+theme_override_font_sizes/font_size = 28
+text = "0"
+vertical_alignment = 1
+
+[node name="ComputerLabel" type="Label" parent="SafeMargin/Layout/ScorePanel/ScoreMargin/ScoreRow/ComputerBlock"]
+layout_mode = 2
+theme_type_variation = &"computer_text"
+text = "CPU"
+vertical_alignment = 1
+
+[node name="Arena" type="GridContainer" parent="SafeMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 184)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 6
+columns = 3
+
+[node name="PlayerCard" type="Panel" parent="SafeMargin/Layout/Arena"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"player_panel"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Layout/Arena/PlayerCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Layout/Arena/PlayerCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Role" type="Label" parent="SafeMargin/Layout/Arena/PlayerCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"player_text"
+text = "PLAYER"
+horizontal_alignment = 1
+
+[node name="ChoiceStage" type="Control" parent="SafeMargin/Layout/Arena/PlayerCard/Margin/Content"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerChoiceIcon" type="TextureRect" parent="SafeMargin/Layout/Arena/PlayerCard/Margin/Content/ChoiceStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = -6.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayerUnknown" type="Label" parent="SafeMargin/Layout/Arena/PlayerCard/Margin/Content/ChoiceStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"result"
+theme_override_font_sizes/font_size = 54
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerChoiceName" type="Label" parent="SafeMargin/Layout/Arena/PlayerCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"subtitle"
+text = "Your pick"
+horizontal_alignment = 1
+
+[node name="Versus" type="Label" parent="SafeMargin/Layout/Arena"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"title"
+theme_override_font_sizes/font_size = 24
+text = "VS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ComputerCard" type="Panel" parent="SafeMargin/Layout/Arena"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"computer_panel"
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/Layout/Arena/ComputerCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Layout/Arena/ComputerCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Role" type="Label" parent="SafeMargin/Layout/Arena/ComputerCard/Margin/Content"]
+layout_mode = 2
+theme_type_variation = &"computer_text"
+text = "COMPUTER"
+horizontal_alignment = 1
+
+[node name="ChoiceStage" type="Control" parent="SafeMargin/Layout/Arena/ComputerCard/Margin/Content"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ComputerChoiceIcon" type="TextureRect" parent="SafeMargin/Layout/Arena/ComputerCard/Margin/Content/ChoiceStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = -6.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ComputerUnknown" type="Label" parent="SafeMargin/Layout/Arena/ComputerCard/Margin/Content/ChoiceStage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"result"
+theme_override_font_sizes/font_size = 54
+text = "?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ComputerChoiceName" type="Label" parent="SafeMargin/Layout/Arena/ComputerCard/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"subtitle"
+text = "Waiting"
+horizontal_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="SafeMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_type_variation = &"result"
+text = "Make your move"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="SafeMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "First to the button wins the moment"
+horizontal_alignment = 1
+
+[node name="ChoiceButtons" type="HBoxContainer" parent="SafeMargin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 108)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RockButton" type="Button" parent="SafeMargin/Layout/ChoiceButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 106)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"choice_button"
+tooltip_text = "Rock (1)"
+
+[node name="Content" type="MarginContainer" parent="SafeMargin/Layout/ChoiceButtons/RockButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Stack" type="VBoxContainer" parent="SafeMargin/Layout/ChoiceButtons/RockButton/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/ChoiceButtons/RockButton/Content/Stack"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("5_rock")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/ChoiceButtons/RockButton/Content/Stack"]
+layout_mode = 2
+mouse_filter = 2
+text = "ROCK"
+horizontal_alignment = 1
+
+[node name="PaperButton" type="Button" parent="SafeMargin/Layout/ChoiceButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 106)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"choice_button"
+tooltip_text = "Paper (2)"
+
+[node name="Content" type="MarginContainer" parent="SafeMargin/Layout/ChoiceButtons/PaperButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Stack" type="VBoxContainer" parent="SafeMargin/Layout/ChoiceButtons/PaperButton/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/ChoiceButtons/PaperButton/Content/Stack"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("6_paper")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/ChoiceButtons/PaperButton/Content/Stack"]
+layout_mode = 2
+mouse_filter = 2
+text = "PAPER"
+horizontal_alignment = 1
+
+[node name="ScissorsButton" type="Button" parent="SafeMargin/Layout/ChoiceButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 106)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"choice_button"
+tooltip_text = "Scissors (3)"
+
+[node name="Content" type="MarginContainer" parent="SafeMargin/Layout/ChoiceButtons/ScissorsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Stack" type="VBoxContainer" parent="SafeMargin/Layout/ChoiceButtons/ScissorsButton/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="Icon" type="TextureRect" parent="SafeMargin/Layout/ChoiceButtons/ScissorsButton/Content/Stack"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("7_scissors")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SafeMargin/Layout/ChoiceButtons/ScissorsButton/Content/Stack"]
+layout_mode = 2
+mouse_filter = 2
+text = "SCISSORS"
+horizontal_alignment = 1

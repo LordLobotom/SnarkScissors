@@ -1,0 +1,194 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/SettingsOverlay.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+
+[node name="SettingsOverlay" type="Control"]
+visible = false
+z_index = 100
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.025, 0.03, 0.09, 0.86)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="Center" type="CenterContainer" parent="SafeMargin"]
+layout_mode = 2
+
+[node name="SettingsCard" type="PanelContainer" parent="SafeMargin/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+theme_type_variation = &"surface_container"
+
+[node name="CardMargin" type="MarginContainer" parent="SafeMargin/Center/SettingsCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+
+[node name="Title" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"title"
+text = "Settings"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 42)
+layout_mode = 2
+text = "×"
+tooltip_text = "Close settings"
+
+[node name="Hint" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "Tune the game to your liking."
+
+[node name="Divider" type="ColorRect" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.30, 0.52, 0.8)
+
+[node name="MasterRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+custom_minimum_size = Vector2(82, 0)
+layout_mode = 2
+text = "Master"
+vertical_alignment = 1
+
+[node name="MasterSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 85.0
+
+[node name="MasterValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MasterRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "85%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MusicRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+custom_minimum_size = Vector2(82, 0)
+layout_mode = 2
+text = "Music"
+vertical_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 45.0
+
+[node name="MusicValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/MusicRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "45%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SFXRow" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+custom_minimum_size = Vector2(82, 0)
+layout_mode = 2
+text = "Effects"
+vertical_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 90.0
+
+[node name="SFXValue" type="Label" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/SFXRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_type_variation = &"muted"
+text = "90%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="SafeMargin/Center/SettingsCard/CardMargin/Content"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ResetButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 46)
+layout_mode = 2
+text = "Reset"
+
+[node name="Spacer" type="Control" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DoneButton" type="Button" parent="SafeMargin/Center/SettingsCard/CardMargin/Content/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(108, 46)
+layout_mode = 2
+theme_type_variation = &"main_action"
+text = "Done"

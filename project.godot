@@ -10,21 +10,25 @@ config_version=5
 
 [application]
 
-config/name="snarkscissors"
+config/name="SnarkScissors"
 run/main_scene="res://scenes/MainMenu.tscn"
 config/features=PackedStringArray("4.5", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://ui/app_icon.svg"
 
 [autoload]
 
-NetworkManager="*res://scripts/NetworkManager.gd"
+AudioManager="*res://scenes/AudioManager.tscn"
+SettingsManager="*res://scripts/SettingsManager.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/borderless=true
-window/stretch/mode="viewport"
+window/size/viewport_width=390
+window/size/viewport_height=390
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [dotnet]
 

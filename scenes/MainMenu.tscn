@@ -1,347 +1,109 @@
-[gd_scene load_steps=3 format=3 uid="uid://crfya0eumism"]
+[gd_scene format=3 uid="uid://0vqg0fygiiny"]
 
-[ext_resource type="Script" uid="uid://bp4avtkbk8lkb" path="res://scripts/MainMenu.gd" id="1"]
-[ext_resource type="Theme" path="res://ui/theme.tres" id="2"]
+[ext_resource type="Script" uid="uid://bp4avtkbk8lkb" path="res://scripts/MainMenu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui/theme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://scripts/Backdrop.gd" id="3_backdrop"]
+[ext_resource type="PackedScene" path="res://scenes/UI/SettingsOverlay.tscn" id="4_settings"]
+[ext_resource type="Texture2D" uid="uid://bm5mugo5e78ng" path="res://ui/throw_scissors.svg" id="5_icon"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=549514615]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2")
-script = ExtResource("1")
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Backdrop" type="Control" parent="." unique_id=378563672]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.07, 0.1, 1)
+script = ExtResource("3_backdrop")
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="SafeMargin" type="MarginContainer" parent="." unique_id=1745368007]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_top = 48
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_bottom = 48
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="MainVBox" type="VBoxContainer" parent="MainMargin"]
+[node name="Center" type="CenterContainer" parent="SafeMargin" unique_id=1314475071]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 32
 
-[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox"]
+[node name="MenuCard" type="PanelContainer" parent="SafeMargin/Center" unique_id=1274518317]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 24
+theme_type_variation = &"surface_container"
 
-[node name="TitleBlock" type="VBoxContainer" parent="MainMargin/MainVBox/Header"]
+[node name="CardMargin" type="MarginContainer" parent="SafeMargin/Center/MenuCard" unique_id=757470981]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
-[node name="TitleLabel" type="Label" parent="MainMargin/MainVBox/Header/TitleBlock"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "SnarkScissors"
-
-[node name="SubtitleLabel" type="Label" parent="MainMargin/MainVBox/Header/TitleBlock"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"subtitle"
-text = "Rock. Paper. Drama. Queue up for a snarky throwdown with friends or rivals."
-autowrap_mode = 2
-
-[node name="HeaderButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.35
-theme_override_constants/separation = 12
-
-[node name="SettingsButton" type="Button" parent="MainMargin/MainVBox/Header/HeaderButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Settings"
-
-[node name="Content" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 32
-
-[node name="HeroPanel" type="Panel" parent="MainMargin/MainVBox/Content"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HeroMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/HeroPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 32
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 32
-
-[node name="HeroVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 20
-
-[node name="HeroHeading" type="Label" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "Ready to throw down?"
-autowrap_mode = 2
-
-[node name="HeroDescription" type="Label" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Create a lobby, bring a friend, and let the snarky animations fly. Host locally now and upgrade to dedicated servers later."
-autowrap_mode = 2
-
-[node name="ActionButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="MultiplayerButton" type="Button" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox/ActionButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Play Online"
-
-[node name="LearnMoreButton" type="Button" parent="MainMargin/MainVBox/Content/HeroPanel/HeroMargin/HeroVBox/ActionButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-disabled = true
-text = "How it works"
-
-[node name="HeroSpacer" type="Control" parent="MainMargin/MainVBox/Content"]
-custom_minimum_size = Vector2(32, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 3
-
-[node name="InteractionPanel" type="Panel" parent="MainMargin/MainVBox/Content"]
-custom_minimum_size = Vector2(450, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="InteractionMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 28
 
-[node name="InteractionStack" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin"]
+[node name="Menu" type="VBoxContainer" parent="SafeMargin/Center/MenuCard/CardMargin" unique_id=1189691995]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_constants/separation = 10
 
-[node name="ConnectionPanel" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack"]
+[node name="BrandIcon" type="TextureRect" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=779033175]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("5_icon")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ConnectionMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
-
-[node name="ConnectionVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin"]
+[node name="TitleLabel" type="Label" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=1670556646]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 18
-
-[node name="ConnectionTitle" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "Host or Join a Match"
-autowrap_mode = 2
-
-[node name="ConnectionSubtitle" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"subtitle"
-text = "Use your public IP for remote friends or stick to LAN for quick battles."
-autowrap_mode = 2
-
-[node name="FormGrid" type="GridContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
-layout_mode = 2
-columns = 2
-
-[node name="IPLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
-layout_mode = 2
-text = "IP Address"
-
-[node name="IPInput" type="LineEdit" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "e.g. 127.0.0.1"
-
-[node name="PortLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
-layout_mode = 2
-text = "Port"
-
-[node name="PortInput" type="SpinBox" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/FormGrid"]
-layout_mode = 2
-min_value = 1024.0
-max_value = 65535.0
-value = 7777.0
-
-[node name="ConnectionButtons" type="HBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="HostButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/ConnectionButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Host Lobby"
-
-[node name="JoinButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox/ConnectionButtons"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Join Lobby"
-
-[node name="ConnectionStatusLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/ConnectionPanel/ConnectionMargin/ConnectionVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Ready to connect"
+theme_type_variation = &"display"
+text = "SNARK SCISSORS"
 horizontal_alignment = 1
 
-[node name="LobbyPanel" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack"]
-visible = false
+[node name="Subtitle" type="Label" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=1477562662]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_type_variation = &"subtitle"
+text = "Rock  •  Paper  •  Scissors"
+horizontal_alignment = 1
 
-[node name="LobbyMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
-
-[node name="LobbyVBox" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin"]
+[node name="PlayButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=106309443]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 18
+theme_type_variation = &"main_action"
+text = "Play"
 
-[node name="LobbyTitleLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="SettingsButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=607384961]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"title"
-text = "Lobby"
+text = "Settings"
 
-[node name="LobbyStatusLabel" type="Label" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
+[node name="QuitButton" type="Button" parent="SafeMargin/Center/MenuCard/CardMargin/Menu" unique_id=516219477]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Host | Players: 1/2"
-
-[node name="PlayersFrame" type="Panel" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="PlayersMargin" type="MarginContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
-
-[node name="PlayersScroll" type="ScrollContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame/PlayersMargin"]
-layout_mode = 2
-
-[node name="PlayersList" type="VBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/PlayersFrame/PlayersMargin/PlayersScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="ButtonsContainer" type="HBoxContainer" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="ReadyButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Ready"
-
-[node name="StartButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
-layout_mode = 2
-size_flags_horizontal = 2
-disabled = true
-text = "Start Match"
-
-[node name="DisconnectButton" type="Button" parent="MainMargin/MainVBox/Content/InteractionPanel/InteractionMargin/InteractionStack/LobbyPanel/LobbyMargin/LobbyVBox/ButtonsContainer"]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Leave Lobby"
-
-[node name="Footer" type="HBoxContainer" parent="MainMargin/MainVBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 16
-
-[node name="BackButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Back"
-
-[node name="FooterSpacer" type="Control" parent="MainMargin/MainVBox/Footer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="NextButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Next"
-
-[node name="QuitButton" type="Button" parent="MainMargin/MainVBox/Footer"]
-layout_mode = 2
-size_flags_horizontal = 2
+theme_type_variation = &"danger_action"
 text = "Quit"
+
+[node name="SettingsOverlay" parent="." unique_id=1326634722 instance=ExtResource("4_settings")]
+layout_mode = 1
+offset_left = 3.0
+offset_top = -20.0
+offset_right = 3.0
+offset_bottom = -20.0
